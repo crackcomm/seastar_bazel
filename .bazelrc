@@ -1,12 +1,5 @@
 build --spawn_strategy=standalone
 build --strategy=Genrule=standalone
-build -c opt
-
-# Modular TF build options
-build:dynamic_kernels --define=dynamic_loaded_kernels=true
-build:dynamic_kernels --copt=-DAUTOLOAD_DYNAMIC_KERNELS
-
-# Build TF with C++ 17 features.
 build --cxxopt=-std=c++20
 
 # Put user-specific options in .bazelrc.user

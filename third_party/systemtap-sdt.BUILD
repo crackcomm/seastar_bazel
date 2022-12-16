@@ -1,6 +1,6 @@
 licenses(["unencumbered"])  # CC0 1.0 Public Domain
 
-load("@//third_party:common.bzl", "template_rule")
+load("@seastar_bazel//third_party:common.bzl", "template_rule")
 
 cc_library(
     name = "systemtap-sdt",

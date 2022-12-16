@@ -32,17 +32,16 @@ cc_library(
         "include/seastar/http/request_parser.hh",
         "include/seastar/http/response_parser.hh",
     ],
-    copts = [
-        "-DSEASTAR_NO_EXCEPTION_HACK",
-        "-DNO_EXCEPTION_INTERCEPT",
-        "-DSEASTAR_DEFAULT_ALLOCATOR",
-        "-DSEASTAR_HAVE_NUMA",
-    ],
     defines = [
-        #"-DSEASTAR_HAVE_DPDK",
-        "SEASTAR_SCHEDULING_GROUPS_COUNT=24",
-        "SEASTAR_API_LEVEL=6",
-        "SEASTAR_SSTRING",
+        "SEASTAR_NO_EXCEPTION_HACK",
+        "NO_EXCEPTION_INTERCEPT",
+        "SEASTAR_DEFAULT_ALLOCATOR",
+        "SEASTAR_HAVE_NUMA",
+        "SEASTAR_SCHEDULING_GROUPS_COUNT=24",  # TODO: option
+        "SEASTAR_API_LEVEL=6",  # TODO: option
+        "SEASTAR_SSTRING",  # TODO: option
+        # TODO:
+        # "SEASTAR_HAVE_DPDK",
         # Debug flags:
         # "SEASTAR_DEBUG",
         # "SEASTAR_DEFAULT_ALLOCATOR",
@@ -63,6 +62,7 @@ cc_library(
     deps = [
         #":metrics2_cc_proto",
         "@boost//:asio",
+        "@boost//:endian",
         "@boost//:filesystem",
         "@boost//:fusion",
         "@boost//:lockfree",
@@ -81,7 +81,7 @@ cc_library(
         "@systemtap-sdt",
         "@xfs",
         "@yaml-cpp",
-        "@com_google_protobuf//:protobuf"
+        "@com_google_protobuf//:protobuf",
     ],
 )
 

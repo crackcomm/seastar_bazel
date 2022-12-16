@@ -5,6 +5,8 @@ exports_files(["COPYING"])
 cc_library(
     name = "aapl",
     hdrs = glob(["aapl/*.h"]),
+    # Disable all warnings
+    copts = ["-w"],
     strip_include_prefix = "aapl",
 )
 

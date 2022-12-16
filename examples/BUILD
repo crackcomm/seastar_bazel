@@ -10,9 +10,9 @@ COMMON_COPTS = [
 ]
 
 cc_binary(
-    name = "demo",
+    name = "hello-world",
     srcs = [
-        "demo.cc",
+        "hello-world.cc",
     ],
     copts = COMMON_COPTS,
     linkstatic = 1,
