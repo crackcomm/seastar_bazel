@@ -101,7 +101,6 @@ cc_library(
     hdrs = glob(
         ["include/seastar/testing/*.hh"],
     ),
-    copts = COPTS,
     defines = [
         "BOOST_TEST_ALTERNATIVE_INIT_API",
     ],
@@ -155,17 +154,12 @@ genrule(
         additional_linker_inputs = [
             "@gnutls",
         ],
-        data = [
-            "@cryptopp//:testdata",
-        ],
         defines = ["SEASTAR_TESTING_MAIN"],
         linkopts = ["-lgomp"],
         linkstatic = True,
         visibility = ["//visibility:public"],
         deps = [
-            ":seastar",
             ":testing",
-            "@boost//:test.a",
         ],
     )
     for file_name in glob(["tests/unit/*_test.cc"])
