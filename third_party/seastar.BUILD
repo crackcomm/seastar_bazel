@@ -147,6 +147,26 @@ genrule(
 
 [
     cc_binary(
+        name = app.replace("apps/", ""),
+        srcs = glob([app + "/*.cc"]),
+        additional_linker_inputs = [
+            "@gnutls",
+        ],
+        linkopts = ["-lgomp"],
+        visibility = ["//visibility:public"],
+        deps = [
+            ":seastar",
+        ],
+    )
+    for app in glob(
+        ["apps/*"],
+        exclude = ["apps/CMakeLists.txt"],
+        exclude_directories = 0,
+    )
+]
+
+[
+    cc_binary(
         name = file_name.replace("demos/", "").replace(".cc", ""),
         srcs = [file_name],
         additional_linker_inputs = [
