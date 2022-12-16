@@ -36,11 +36,11 @@ seastar()
 
 See [BUILD](https://github.com/crackcomm/seastar_bazel/blob/main/examples/BUILD) file in examples.
 
-## Credits
+---
 
-This repo is based on [tensorflow networking](https://github.com/tensorflow/networking/) with build rules copied from other projects.
+Based on [tensorflow networking](https://github.com/tensorflow/networking/) and some other projects:
 
 * [tensorflow](https://github.com/tensorflow/tensorflow/) bazel rules
-* [tensorflow networking](https://github.com/tensorflow/networking/) bazel rules
 * [fuhailin/rules_deps](https://github.com/fuhailin/rules_deps)
 * [redpanda](https://github.com/redpanda-data/redpanda/blob/b5db3b3a96f04b0e17344ac23025377eeaeb374b/cmake/oss.cmake.in#L168)
+* [tensorflow networking](https://github.com/tensorflow/networking/) bazel rules

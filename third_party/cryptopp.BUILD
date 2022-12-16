@@ -33,3 +33,9 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [":cryptopp_internal"],
 )
+
+filegroup(
+    name = "testdata",
+    srcs = glob(["TestData/*.dat"]),
+    visibility = ["//visibility:public"],
+)

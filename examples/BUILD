@@ -15,7 +15,6 @@ cc_binary(
         "hello-world.cc",
     ],
     copts = COMMON_COPTS,
-    linkstatic = 1,
     visibility = ["//visibility:public"],
     deps = [
         "@seastar",
