@@ -47,6 +47,16 @@ seastar()
 
 See [BUILD](https://github.com/crackcomm/seastar_bazel/blob/main/examples/BUILD) file in examples.
 
+To use local version of seastar use `new_local_repository` rule before `seastar` repository rule call.
+
+```starlark
+new_local_repository(
+    name = "seastar",
+    path = "my-seastar",
+    build_file = "@seastar_bazel//:third_party/seastar.BUILD",
+)
+```
+
 ---
 
 Based on [tensorflow networking](https://github.com/tensorflow/networking/) and some other projects:
