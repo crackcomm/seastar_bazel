@@ -17,10 +17,9 @@ NOTE: Tests currently don't fully work because of a linker [issue](https://githu
 
 ## Plans for improvement
 
+* Release and feature flags.
 * Build and run seastar tests.
 * Build seastar with DPDK support.
-* Use [CMake default](https://github.com/scylladb/seastar/blob/784bfdd8f745f6b2ac260e0098c8685e33a34475/CMakeLists.txt#L804-L806) feature flags.
-* Expose feature flags to users.
 
 ## Usage
 
