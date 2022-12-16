@@ -28,11 +28,9 @@ http_archive(
 )
 
 load("@seastar_bazel//:seastar_deps.bzl", "seastar_deps")
-
-seastar_deps()
-
 load("@seastar_bazel//:seastar.bzl", "seastar")
 
+seastar_deps()
 seastar()
 ```
 
