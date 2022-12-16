@@ -102,14 +102,14 @@ cc_library(
         ["include/seastar/testing/*.hh"],
     ),
     copts = COPTS,
-    local_defines = [
+    defines = [
         "BOOST_TEST_ALTERNATIVE_INIT_API",
     ],
     strip_include_prefix = "include",
     visibility = ["//visibility:public"],
     deps = [
         ":seastar",
-        "@boost//:test",
+        "@boost//:test.a",
     ],
 )
 
@@ -146,21 +146,27 @@ genrule(
     tools = ["@ragel//:ragelc"],
 )
 
-cc_test(
-    name = "tests",
-    srcs = ["tests/unit/sstring_test.cc"],
-    additional_linker_inputs = [
-        "@gnutls",
-    ],
-    data = [
-        "@cryptopp//:testdata",
-    ],
-    linkopts = ["-lgomp"],
-    linkstatic = True,
-    visibility = ["//visibility:public"],
-    deps = [
-        ":seastar",
-        ":testing",
-        "@boost//:test.a",
-    ],
-)
+[
+    cc_test(
+        name = file_name.replace("tests/unit/", "").replace(".cc", ""),
+        srcs = glob(["tests/unit/*.hh"]) + [
+            file_name,
+        ],
+        additional_linker_inputs = [
+            "@gnutls",
+        ],
+        data = [
+            "@cryptopp//:testdata",
+        ],
+        defines = ["SEASTAR_TESTING_MAIN"],
+        linkopts = ["-lgomp"],
+        linkstatic = True,
+        visibility = ["//visibility:public"],
+        deps = [
+            ":seastar",
+            ":testing",
+            "@boost//:test.a",
+        ],
+    )
+    for file_name in glob(["tests/unit/*_test.cc"])
+]
