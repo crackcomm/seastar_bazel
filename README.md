@@ -4,6 +4,17 @@ This repository was created as a means of building seastar applications using Ba
 
 It can build hello world application but it's not yet ready for production.
 
+## Tests
+
+Tests and [demos](https://github.com/scylladb/seastar/tree/master/demos) can be run using following commands:
+
+```sh
+bazel run @seastar//:hello-world
+bazel test @seastar//...
+```
+
+NOTE: Tests currently don't fully work because of a linker [issue](https://github.com/crackcomm/seastar_bazel/issues/2).
+
 ## Plans for improvement
 
 * Build and run seastar tests.

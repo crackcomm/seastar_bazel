@@ -146,6 +146,22 @@ genrule(
 )
 
 [
+    cc_binary(
+        name = file_name.replace("demos/", "").replace(".cc", ""),
+        srcs = [file_name],
+        additional_linker_inputs = [
+            "@gnutls",
+        ],
+        linkopts = ["-lgomp"],
+        visibility = ["//visibility:public"],
+        deps = [
+            ":seastar",
+        ],
+    )
+    for file_name in glob(["demos/*.cc"])
+]
+
+[
     cc_test(
         name = file_name.replace("tests/unit/", "").replace(".cc", ""),
         srcs = glob(["tests/unit/*.hh"]) + [
