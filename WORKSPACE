@@ -1,44 +1,54 @@
-workspace(name = "tf_networking")
+workspace(name = "seastar_bazel")
 
-load("//third_party/tensorflow:tf_configure.bzl", "tf_configure")
-load("//tensorflow_networking:repo.bzl", "tensorflow_http_archive")
+local_repository(
+    name = "seastar_bazel_examples",
+    path = "examples",
+)
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-tf_configure(
-    name = "local_config_tf",
+http_archive(
+    name = "rules_foreign_cc",
+    sha256 = "c7913eb3ce2e9fea0e1b2ba65c51114ea66a524d20d974f720a9baa5cbbb2ab3",
+    strip_prefix = "rules_foreign_cc-0ed27c13b18f412e00e9122fc01327503d52579c",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0ed27c13b18f412e00e9122fc01327503d52579c.tar.gz",
 )
 
-maybe(
-    http_archive,
-    name = "bazel_skylib",
-    sha256 = "1dde365491125a3db70731e25658dfdd3bc5dbdfd11b840b3e987ecf043c7ca0",
-    url = "https://github.com/bazelbuild/bazel-skylib/releases/download/0.9.0/bazel_skylib-0.9.0.tar.gz",
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
+
+rules_foreign_cc_dependencies()
+
+http_archive(
+    name = "zlib",
+    build_file = "//third_party:zlib.BUILD",
+    sha256 = "d14c38e313afc35a9a8760dadf26042f51ea0f5d154b0630a31da0540107fb98",
+    strip_prefix = "zlib-1.2.13",
+    urls = [
+        "https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.xz",
+        "https://zlib.net/zlib-1.2.13.tar.xz",
+    ],
 )
-
-load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
-
-bazel_skylib_workspace()
 
 maybe(
     http_archive,
     name = "com_google_protobuf",
-    sha256 = "b9e92f9af8819bbbc514e2902aec860415b70209f31dfc8c4fa72515a5df9d59",
-    strip_prefix = "protobuf-310ba5ee72661c081129eb878c1bbcec936b20f0",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/310ba5ee72661c081129eb878c1bbcec936b20f0.tar.gz"],
+    sha256 = "cfcba2df10feec52a84208693937c17a4b5df7775e1635c1e3baffc487b24c9b",
+    strip_prefix = "protobuf-3.9.2",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.9.2.zip"],
 )
 
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
 
-maybe(
-    http_archive,
+# Boost
+http_archive(
     name = "com_github_nelhage_rules_boost",
-    sha256 = "f8c9653c1c49489c04f9f87ab1ee93d7b59bb26a39d9e30e9687fca3c6197c3f",
-    strip_prefix = "rules_boost-9f9fb8b2f0213989247c9d5c0e814a8451d18d7f",
-    urls = ["https://github.com/nelhage/rules_boost/archive/9f9fb8b2f0213989247c9d5c0e814a8451d18d7f.tar.gz"],
+    sha256 = "896d511f057cad281e93103be6ccf3f31ce1b66322ea7fe733232651d16b1cdb",
+    strip_prefix = "rules_boost-63a91c1464eaf1b918a5df4cf3ffaa9ca852ab11",
+    url = "https://github.com/nelhage/rules_boost/archive/63a91c1464eaf1b918a5df4cf3ffaa9ca852ab11.tar.gz",
 )
 
 load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
@@ -49,21 +59,21 @@ maybe(
     http_archive,
     name = "fmtlib",
     build_file = "//third_party:fmtlib.BUILD",
-    sha256 = "3c812a18e9f72a88631ab4732a97ce9ef5bcbefb3235e9fd465f059ba204359b",
-    strip_prefix = "fmt-5.2.1",
+    sha256 = "3d794d3cf67633b34b2771eb9f073bde87e846e0d395d254df7b211ef1ec7346",
+    strip_prefix = "fmt-8.1.1",
     urls = [
-        "https://github.com/fmtlib/fmt/archive/5.2.1.tar.gz",
+        "https://github.com/fmtlib/fmt/archive/8.1.1.tar.gz",
     ],
 )
 
 maybe(
     http_archive,
     name = "cares",
-    build_file = "//third_party/cares:cares.BUILD",
-    sha256 = "03f708f1b14a26ab26c38abd51137640cb444d3ec72380b21b20f1a8d2861da7",
-    strip_prefix = "c-ares-1.13.0",
+    build_file = "//third_party:cares.BUILD",
+    sha256 = "7c48c57706a38691041920e705d2a04426ad9c68d40edd600685323f214b2d57",
+    strip_prefix = "c-ares-cares-1_13_0",
     urls = [
-        "https://c-ares.haxx.se/download/c-ares-1.13.0.tar.gz",
+        "https://github.com/c-ares/c-ares/archive/cares-1_13_0.tar.gz",
     ],
 )
 
@@ -104,10 +114,10 @@ maybe(
     http_archive,
     name = "cryptopp",
     build_file = "//third_party:cryptopp.BUILD",
-    sha256 = "e3bcd48a62739ad179ad8064b523346abb53767bcbefc01fe37303412292343e",
-    strip_prefix = "cryptopp-CRYPTOPP_8_2_0",
+    sha256 = "8f64cf09cf4f61d5d74bca53574b8cc9959186cc0f072a2e6597e4999d6ad5db",
+    strip_prefix = "cryptopp-CRYPTOPP_8_5_0",
     urls = [
-        "https://github.com/weidai11/cryptopp/archive/CRYPTOPP_8_2_0.tar.gz",
+        "https://github.com/weidai11/cryptopp/archive/CRYPTOPP_8_5_0.tar.gz",
     ],
 )
 
@@ -146,7 +156,10 @@ maybe(
     build_file = "//third_party:systemtap-sdt.BUILD",
     sha256 = "0984ebe3162274988252ec35074021dc1e8420d87a8b35f437578562fce08781",
     strip_prefix = "systemtap-4.2",
-    urls = ["https://sourceware.org/systemtap/ftp/releases/systemtap-4.2.tar.gz"],
+    urls = [
+        "https://mirrors.kernel.org/sourceware/systemtap/releases/systemtap-4.2.tar.gz",
+        "https://sourceware.org/systemtap/ftp/releases/systemtap-4.2.tar.gz",
+    ],
 )
 
 maybe(
@@ -168,14 +181,14 @@ maybe(
 )
 
 maybe(
-    tensorflow_http_archive,
+    http_archive,
     name = "seastar",
     build_file = "//third_party:seastar.BUILD",
-    patch_file = "//third_party:seastar.patch",
-    sha256 = "27f1d42e77acfb8bcccd102e417fdaa81b3c8d589a8e7b009dd3312dcf6fbeef",
-    strip_prefix = "seastar-seastar-19.06.0",
+    #patch_file = "//third_party:seastar.patch",
+    #sha256 = "82044cd4f73edb38bbc47a139272753495449414364e67438e3c2cb3d4989f17",
+    strip_prefix = "seastar-master",
     urls = [
-        "https://github.com/scylladb/seastar/archive/seastar-19.06.0.tar.gz",
+        "https://github.com/scylladb/seastar/archive/master.tar.gz",
     ],
 )
 

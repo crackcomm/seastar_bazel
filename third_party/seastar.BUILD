@@ -2,15 +2,15 @@ licenses(["notice"])  # Apache 2.0
 
 exports_files(["LICENSE"])
 
-proto_library(
-    name = "metrics2_proto",
-    srcs = ["src/proto/metrics2.proto"],
-)
-
-cc_proto_library(
-    name = "metrics2_cc_proto",
-    deps = [":metrics2_proto"],
-)
+#proto_library(
+#    name = "metrics2_proto",
+#    srcs = ["src/proto/metrics2.proto"],
+#)
+#
+#cc_proto_library(
+#    name = "metrics2_cc_proto",
+#    deps = [":metrics2_proto"],
+#)
 
 cc_library(
     name = "seastar",
@@ -28,6 +28,7 @@ cc_library(
             "include/seastar/testing/*.hh",
         ],
     ) + [
+        "include/seastar/http/chunk_parsers.hh",
         "include/seastar/http/request_parser.hh",
         "include/seastar/http/response_parser.hh",
     ],
@@ -36,6 +37,17 @@ cc_library(
         "-DNO_EXCEPTION_INTERCEPT",
         "-DSEASTAR_DEFAULT_ALLOCATOR",
         "-DSEASTAR_HAVE_NUMA",
+    ],
+    defines = [
+        #"-DSEASTAR_HAVE_DPDK",
+        "SEASTAR_SCHEDULING_GROUPS_COUNT=24",
+        "SEASTAR_API_LEVEL=6",
+        "SEASTAR_SSTRING",
+        # Debug flags:
+        # "SEASTAR_DEBUG",
+        # "SEASTAR_DEFAULT_ALLOCATOR",
+        # "SEASTAR_SHUFFLE_TASK_QUEUE",
+        # "SEASTAR_TYPE_ERASE_MORE",
     ],
     includes = [
         "src",
@@ -49,7 +61,7 @@ cc_library(
     strip_include_prefix = "include",
     visibility = ["//visibility:public"],
     deps = [
-        ":metrics2_cc_proto",
+        #":metrics2_cc_proto",
         "@boost//:asio",
         "@boost//:filesystem",
         "@boost//:fusion",
@@ -69,8 +81,19 @@ cc_library(
         "@systemtap-sdt",
         "@xfs",
         "@yaml-cpp",
-        "@readerwriterqueue",
+        "@com_google_protobuf//:protobuf"
     ],
+)
+
+genrule(
+    name = "generate_http_chunk_parsers",
+    srcs = ["src/http/chunk_parsers.rl"],
+    outs = ["include/seastar/http/chunk_parsers.hh"],
+    cmd = "\n".join([
+        "$(location @ragel//:ragelc) -G2 -o $@ $<",
+        "sed -i -e '1h;2,$$H;$$!d;g' -re 's/static const char _nfa[^;]*;//g' $@",
+    ]),
+    tools = ["@ragel//:ragelc"],
 )
 
 genrule(
