@@ -25,6 +25,6 @@ License: Apache-2.0
 
 Files: third_party/cares.BUILD
 Source: https://github.com/bazelbuild/rules_foreign_cc/blob/main/examples/third_party/cares/BUILD.cares.bazel
-Copyright: 2022, rules_foreign_cc Authors
+Copyright: 2022, Google Inc.
            2022, Łukasz Kurowski
-License: Unknown
+License: Apache-2.0
