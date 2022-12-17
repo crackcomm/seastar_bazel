@@ -58,9 +58,4 @@ new_local_repository(
 
 ---
 
-Based on [tensorflow networking](https://github.com/tensorflow/networking/) and some other projects:
-
-* [tensorflow](https://github.com/tensorflow/tensorflow/) bazel rules
-* [fuhailin/rules_deps](https://github.com/fuhailin/rules_deps)
-* [redpanda](https://github.com/redpanda-data/redpanda/blob/b5db3b3a96f04b0e17344ac23025377eeaeb374b/cmake/oss.cmake.in#L168)
-* [tensorflow networking](https://github.com/tensorflow/networking/) bazel rules
+Based on [tensorflow networking](https://github.com/tensorflow/networking/).
