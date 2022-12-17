@@ -1,19 +1,13 @@
-licenses(["notice"])  # Boost
+licenses(["notice"])
+
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 exports_files(["License.txt"])
 
-COPTS = [
-    "-fopenmp",
-    "-msha",
-    "-maes",
-    # TODO: Issue #1
-    #"-mavx2",
-    "-mpclmul",
-    "-Wno-deprecated-enum-enum-conversion",
-]
+package(default_visibility = ["//visibility:public"])
 
-cc_library(
-    name = "cryptopp_internal",
+filegroup(
+    name = "srcs",
     srcs = glob(
         ["*.cpp"],
         exclude = [
@@ -24,30 +18,19 @@ cc_library(
             "regtest*.cpp",
         ],
     ) + glob(["*.h"]),
-    copts = COPTS,
-    defines = [
-        "CRYPTOPP_DISABLE_SSE4",
-    ],
-    textual_hdrs = [
-        "algebra.cpp",
-        "strciphr.cpp",
-        "eprecomp.cpp",
-        "polynomi.cpp",
-        "eccrypto.cpp",
-    ],
 )
 
-cc_library(
+cmake(
     name = "cryptopp",
-    hdrs = glob(["*.h"]),
-    copts = COPTS,
-    include_prefix = "cryptopp",
-    visibility = ["//visibility:public"],
-    deps = [":cryptopp_internal"],
-)
-
-filegroup(
-    name = "testdata",
-    srcs = glob(["TestData/*.dat"]),
-    visibility = ["//visibility:public"],
+    build_args = ["-j `nproc`"],
+    cache_entries = {
+        "CMAKE_CXX_FLAGS": "-std=c++14",
+        "BUILD_TESTING": "OFF",
+    },
+    generate_args = ["-GNinja"],
+    lib_source = ":srcs",
+    out_static_libs = select({
+        "@platforms//os:windows": ["cryptopp.lib"],
+        "//conditions:default": ["libcryptopp.a"],
+    }),
 )

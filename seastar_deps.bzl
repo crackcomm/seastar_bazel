@@ -101,6 +101,11 @@ def seastar_deps():
             urls = [
                 "https://github.com/weidai11/cryptopp/archive/CRYPTOPP_8_5_0.tar.gz",
             ],
+            # We do it like redpanda
+            patch_cmds = [
+                "curl -s -o CMakeLists.txt https://raw.githubusercontent.com/noloader/cryptopp-cmake/CRYPTOPP_8_5_0/CMakeLists.txt",
+                "curl -s -o cryptopp-config.cmake https://raw.githubusercontent.com/noloader/cryptopp-cmake/CRYPTOPP_8_5_0/cryptopp-config.cmake",
+            ],
         )
 
     if not native.existing_rule("lz4"):
