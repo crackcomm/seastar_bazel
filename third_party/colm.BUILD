@@ -179,7 +179,7 @@ genrule(
         "src/gen/if1.cc",
     ],
     cmd = """
-mkdir gen
+mkdir -p gen
 $(location :bootstrap0) -c -o gen/parse1.c -e gen/if1.h -x gen/if1.cc
 mv gen/parse1.c $(location :src/gen/parse1.c)
 mv gen/if1.h $(location :src/gen/if1.h)
@@ -231,7 +231,7 @@ genrule(
         "src/gen/if2.cc",
     ],
     cmd = """
-mkdir gen
+mkdir -p gen
 $(location :bootstrap1) -c -o gen/parse2.c -e gen/if2.h -x gen/if2.cc $(location :src/colm.lm)
 mv gen/parse2.c $(location :src/gen/parse2.c)
 mv gen/if2.h $(location :src/gen/if2.h)
