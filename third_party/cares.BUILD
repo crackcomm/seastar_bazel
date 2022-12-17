@@ -13,9 +13,12 @@ cmake(
         "-j `nproc`",
     ],
     cache_entries = {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CARES_BUILD_TESTS": "off",
         "CARES_BUILD_TOOLS": "off",
         "CARES_SHARED": "off",
         "CARES_STATIC": "on",
+        "CARES_STATIC_PIC": "on",
     },
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",
