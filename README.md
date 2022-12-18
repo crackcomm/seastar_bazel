@@ -21,6 +21,13 @@ NOTE: Tests currently don't fully work because of a linker [issue](https://githu
 * Build and run seastar tests.
 * Build seastar with DPDK support.
 
+### TLS
+
+Currently GnuTLS is not linking properly.
+
+If the issue gets resolved we plan to keep a patch for `SEASTAR_NO_TLS` and use a feature flag for TLS.
+Currently the feature flag can be set with `--@seastar//:with_tls=true`.
+
 ## Usage
 
 In your `WORKSPACE` file add:
@@ -38,9 +45,11 @@ http_archive(
 )
 
 load("@seastar_bazel//:seastar_deps.bzl", "seastar_deps")
-load("@seastar_bazel//:seastar.bzl", "seastar")
 
 seastar_deps()
+
+load("@seastar_bazel//:seastar.bzl", "seastar")
+
 seastar()
 ```
 
