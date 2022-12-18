@@ -23,6 +23,13 @@ filegroup(
 cmake(
     name = "cryptopp",
     build_args = ["-j `nproc`"],
+    build_data = glob(
+        [
+            "CMakeLists.txt",
+            "*.cmake",
+            "TestPrograms/*.cxx",
+        ],
+    ),
     cache_entries = {
         "CMAKE_CXX_FLAGS": "-std=c++14",
         "BUILD_TESTING": "OFF",
