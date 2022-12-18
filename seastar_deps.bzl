@@ -128,6 +128,24 @@ def seastar_deps():
             urls = ["https://github.com/sctp/lksctp-tools/archive/v1.0.18.tar.gz"],
         )
 
+    if not native.existing_rule("gmp"):
+        http_archive(
+            name = "gmp",
+            build_file = "@seastar_bazel//:third_party/gmp.BUILD",
+            sha256 = "5275bb04f4863a13516b2f39392ac5e272f5e1bb8057b18aec1c9b79d73d8fb2",
+            strip_prefix = "gmp-6.1.2",
+            urls = ["https://gmplib.org/download/gmp/gmp-6.1.2.tar.bz2"],
+        )
+
+    if not native.existing_rule("nettle"):
+        http_archive(
+            name = "nettle",
+            build_file = "@seastar_bazel//:third_party/nettle.BUILD",
+            sha256 = "ae7a42df026550b85daca8389b6a60ba6313b0567f374392e54918588a411e94",
+            strip_prefix = "nettle-3.4",
+            urls = ["https://ftp.gnu.org/gnu/nettle/nettle-3.4.tar.gz"],
+        )
+
     if not native.existing_rule("gnutls"):
         http_archive(
             name = "gnutls",
