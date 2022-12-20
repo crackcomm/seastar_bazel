@@ -1,19 +1,19 @@
-load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
-
 licenses(["notice"])  # Apache 2.0
 
 exports_files(["LICENSE"])
 
+package(default_visibility = ["//visibility:public"])
+
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+
 bool_flag(
     name = "with_tls",
     build_setting_default = False,
-    visibility = ["//visibility:public"],
 )
 
 config_setting(
     name = "build_tls",
     flag_values = {":with_tls": "true"},
-    visibility = ["//visibility:public"],
 )
 
 config_setting(
@@ -21,7 +21,6 @@ config_setting(
     values = {
         "compilation_mode": "dbg",
     },
-    visibility = ["//visibility:public"],
 )
 
 #proto_library(
@@ -130,7 +129,6 @@ cc_library(
     ],
     linkopts = LINKOPTS,
     strip_include_prefix = "include",
-    visibility = ["//visibility:public"],
     deps = [
         #":metrics2_cc_proto",
         "@boost//:asio",
@@ -173,7 +171,6 @@ cc_library(
         "BOOST_TEST_ALTERNATIVE_INIT_API",
     ],
     strip_include_prefix = "include",
-    visibility = ["//visibility:public"],
     deps = [
         ":seastar",
         "@boost//:test.a",
@@ -221,7 +218,6 @@ genrule(
             "@gnutls",
         ],
         linkopts = ["-lgomp"],
-        visibility = ["//visibility:public"],
         deps = [
             ":seastar",
         ],
@@ -237,7 +233,6 @@ genrule(
     cc_binary(
         name = file_name.replace("demos/", "").replace(".cc", ""),
         srcs = [file_name],
-        visibility = ["//visibility:public"],
         deps = [":seastar"],
     )
     for file_name in glob(["demos/*.cc"])
@@ -252,7 +247,6 @@ genrule(
         includes = ["src"],
         linkopts = ["-lgomp"],
         linkstatic = True,
-        visibility = ["//visibility:public"],
         deps = [":testing"],
     )
     for file_name in glob(["tests/unit/*_test.cc"])
