@@ -173,7 +173,7 @@ cc_library(
     strip_include_prefix = "include",
     deps = [
         ":seastar",
-        "@boost//:test.a",
+        "@boost//:test.so",
     ],
 )
 
@@ -236,6 +236,7 @@ genrule(
         deps = [":seastar"],
     )
     for file_name in glob(["demos/*.cc"])
+    if "tls" not in file_name
 ]
 
 [
@@ -243,11 +244,14 @@ genrule(
         name = file_name.replace("tests/unit/", "").replace(".cc", ""),
         srcs = glob(["tests/unit/*.hh"]) + [file_name],
         defines = ["SEASTAR_TESTING_MAIN"],
-        # NOTE: this should fix relative imports
         includes = ["src"],
-        linkopts = ["-lgomp"],
-        linkstatic = True,
-        deps = [":testing"],
+        deps = [
+            ":testing",
+            "@boost//:accumulators",
+            "@boost//:test",
+            "@boost//:test.a",
+        ],
     )
     for file_name in glob(["tests/unit/*_test.cc"])
+    if "tls" not in file_name
 ]
