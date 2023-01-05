@@ -136,6 +136,7 @@ cc_library(
 cc_library(
     name = "runtime",
     srcs = _RUNTIME_SRCS,
+    copts = ["-w"],
     visibility = ["//visibility:public"],
     deps = [
         ":prog_iquote",
@@ -146,6 +147,7 @@ cc_library(
 cc_library(
     name = "prog",
     srcs = _PROG_SRCS,
+    copts = ["-w"],
     deps = [
         "runtime_iquote",
         ":aapl",
@@ -161,6 +163,7 @@ cc_binary(
         "src/main.cc",
     ],
     copts = [
+        "-w",
         '-DPREFIX=""',
         "-DCONS_INIT",
     ],
@@ -211,6 +214,7 @@ cc_binary(
         "src/main.cc",
     ],
     copts = [
+        "-w",
         '-DPREFIX=""',
         "-DLOAD_INIT",
     ],
@@ -263,6 +267,7 @@ cc_binary(
         "src/main.cc",
     ],
     copts = [
+        "-w",
         '-DPREFIX=""',
         "-DLOAD_COLM",
     ],

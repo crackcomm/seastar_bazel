@@ -11,6 +11,7 @@ cc_library(
         "libxfs/xfs_log_format.h",
         "libxfs/xfs_types.h",
     ],
+    copts = ["-Wredefined-macro"],
     include_prefix = "xfs",
     strip_include_prefix = "libxfs",
 )

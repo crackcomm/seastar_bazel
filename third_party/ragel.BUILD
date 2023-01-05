@@ -49,7 +49,10 @@ cc_library(
         "src/parse.c",
         "src/rlreduce.cc",
     ],
-    copts = ['-DBINDIR=""'],
+    copts = [
+        "-w",
+        '-DBINDIR=""',
+    ],
     features = ["no_copts_tokenization"],
     includes = ["src"],
     visibility = ["//bin:__pkg__"],
