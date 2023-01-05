@@ -220,6 +220,7 @@ genrule(
         linkopts = ["-lgomp"],
         deps = [
             ":seastar",
+            "@boost//:accumulators",
         ],
     )
     for app in glob(
@@ -233,7 +234,10 @@ genrule(
     cc_binary(
         name = file_name.replace("demos/", "").replace(".cc", ""),
         srcs = [file_name],
-        deps = [":seastar"],
+        deps = [
+            ":seastar",
+            "@boost//:accumulators",
+        ],
     )
     for file_name in glob(["demos/*.cc"])
     if "tls" not in file_name
