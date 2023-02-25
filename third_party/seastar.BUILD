@@ -140,7 +140,7 @@ cc_library(
         "@boost//:system",
         "@boost//:thread",
         "@boost//:variant",
-        "@cares",
+        "@cares_cares//:cares",
         "@cryptopp",
         "@fmtlib",
         "@lz4",

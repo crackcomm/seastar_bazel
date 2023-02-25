@@ -48,9 +48,9 @@ def seastar_deps():
             ],
         )
 
-    if not native.existing_rule("cares"):
+    if not native.existing_rule("cares_cares"):
         http_archive(
-            name = "cares",
+            name = "cares_cares",
             build_file = "@seastar_bazel//:third_party/cares.BUILD",
             sha256 = "7c48c57706a38691041920e705d2a04426ad9c68d40edd600685323f214b2d57",
             strip_prefix = "c-ares-cares-1_13_0",
