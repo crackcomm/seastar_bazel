@@ -1,3 +1,33 @@
+diff --git a/include/seastar/http/client.hh b/include/seastar/http/client.hh
+index 0d1f2d29..c33990f9 100644
+--- a/include/seastar/http/client.hh
++++ b/include/seastar/http/client.hh
+@@ -28,7 +28,9 @@ namespace bi = boost::intrusive;
+ 
+ namespace seastar {
+ 
++#ifndef SEASTAR_NO_TLS
+ namespace tls { class certificate_credentials; }
++#endif
+ 
+ namespace http {
+ 
+@@ -163,6 +165,7 @@ class client {
+      */
+     explicit client(socket_address addr);
+ 
++#ifndef SEASTAR_NO_TLS
+     /**
+      * \brief Construct a secure client
+      *
+@@ -175,6 +178,7 @@ class client {
+      *
+      */
+     client(socket_address addr, shared_ptr<tls::certificate_credentials> creds, sstring host = {});
++#endif
+ 
+     /**
+      * \brief Construct a client with connection factory
 diff --git a/include/seastar/http/httpd.hh b/include/seastar/http/httpd.hh
 index e9f9606d..9df9273e 100644
 --- a/include/seastar/http/httpd.hh
@@ -47,10 +77,10 @@ index e9f9606d..9df9273e 100644
      size_t get_content_length_limit() const;
  
 diff --git a/include/seastar/net/api.hh b/include/seastar/net/api.hh
-index 666b58fc..d086f8e4 100644
+index 3d0b381a..cb79cdf5 100644
 --- a/include/seastar/net/api.hh
 +++ b/include/seastar/net/api.hh
-@@ -169,7 +169,9 @@ struct session_dn {
+@@ -170,7 +170,9 @@ struct session_dn {
  /// A \c connected_socket represents a full-duplex stream between
  /// two endpoints, a local endpoint and a remote endpoint.
  class connected_socket {
@@ -60,11 +90,41 @@ index 666b58fc..d086f8e4 100644
      std::unique_ptr<net::connected_socket_impl> _csi;
  public:
      /// Constructs a \c connected_socket not corresponding to a connection
+diff --git a/src/http/client.cc b/src/http/client.cc
+index 7a66823c..f21a660b 100644
+--- a/src/http/client.cc
++++ b/src/http/client.cc
+@@ -22,7 +22,9 @@
+ #include <seastar/core/loop.hh>
+ #include <seastar/core/when_all.hh>
+ #include <seastar/core/reactor.hh>
++#ifndef SEASTAR_NO_TLS
+ #include <seastar/net/tls.hh>
++#endif
+ #include <seastar/http/client.hh>
+ #include <seastar/http/request.hh>
+ #include <seastar/http/reply.hh>
+@@ -165,6 +167,7 @@ client::client(socket_address addr)
+ {
+ }
+ 
++#ifndef SEASTAR_NO_TLS
+ class tls_connection_factory : public connection_factory {
+     socket_address _addr;
+     shared_ptr<tls::certificate_credentials> _creds;
+@@ -185,6 +188,7 @@ client::client(socket_address addr, shared_ptr<tls::certificate_credentials> cre
+         : client(std::make_unique<tls_connection_factory>(std::move(addr), std::move(creds), std::move(host)))
+ {
+ }
++#endif
+ 
+ client::client(std::unique_ptr<connection_factory> f)
+         : _new_connections(std::move(f))
 diff --git a/src/http/httpd.cc b/src/http/httpd.cc
-index 7502f904..730a9559 100644
+index e22fb44d..f4130e55 100644
 --- a/src/http/httpd.cc
 +++ b/src/http/httpd.cc
-@@ -207,9 +207,11 @@ future<> connection::read_one() {
+@@ -205,9 +205,11 @@ future<> connection::read_one() {
          }
          ++_server._requests_served;
          std::unique_ptr<http::request> req = _parser.get_parsed_request();
@@ -76,7 +136,7 @@ index 7502f904..730a9559 100644
          if (_parser.failed()) {
              if (req->_version.empty()) {
                  // we might have failed to parse even the version
-@@ -348,9 +350,11 @@ future<bool> connection::generate_reply(std::unique_ptr<http::request> req) {
+@@ -350,9 +352,11 @@ future<bool> connection::generate_reply(std::unique_ptr<http::request> req) {
      });
  }
  
@@ -88,7 +148,7 @@ index 7502f904..730a9559 100644
  
  size_t http_server::get_content_length_limit() const {
      return _content_length_limit;
-@@ -369,11 +373,15 @@ void http_server::set_content_streaming(bool b) {
+@@ -371,11 +375,15 @@ void http_server::set_content_streaming(bool b) {
  }
  
  future<> http_server::listen(socket_address addr, listen_options lo) {
