@@ -13,8 +13,6 @@ bazel run @seastar//:hello-world
 bazel test @seastar//...
 ```
 
-NOTE: Tests currently don't fully work because of a linker [issue](https://github.com/crackcomm/seastar_bazel/issues/2).
-
 ## Plans for improvement
 
 * Release and feature flags.
@@ -26,7 +24,7 @@ NOTE: Tests currently don't fully work because of a linker [issue](https://githu
 Currently GnuTLS is not linking properly.
 
 If the issue gets resolved we plan to keep a patch for `SEASTAR_NO_TLS` and use a feature flag for TLS.
-Currently the feature flag can be set with `--@seastar//:with_tls=true`.
+Currently the feature flag can be set with `--define=build_seastar_tls=true`.
 
 ## Usage
 

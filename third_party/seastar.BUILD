@@ -4,16 +4,12 @@ exports_files(["LICENSE"])
 
 package(default_visibility = ["//visibility:public"])
 
-load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
-
-bool_flag(
-    name = "with_tls",
-    build_setting_default = False,
-)
-
 config_setting(
-    name = "build_tls",
-    flag_values = {":with_tls": "true"},
+    name = "build_seastar_tls",
+    define_values = {
+        "build_seastar_tls": "true",
+    },
+    visibility = ["//visibility:public"],
 )
 
 config_setting(
@@ -88,7 +84,7 @@ cc_library(
     name = "seastar",
     srcs =
         select({
-            ":build_tls": glob(
+            ":build_seastar_tls": glob(
                 srcs_glob,
                 exclude = srcs_exclude,
             ),
@@ -101,7 +97,7 @@ cc_library(
         }),
     hdrs =
         select({
-            ":build_tls": glob(
+            ":build_seastar_tls": glob(
                 hdrs_glob,
                 exclude = hdrs_exclude,
             ) + hdrs_srcs,
@@ -114,7 +110,7 @@ cc_library(
         }),
     copts = COPTS,
     defines = select({
-        ":build_tls": [
+        ":build_seastar_tls": [
             "SEASTAR_HAVE_TLS",
         ],
         "//conditions:default": [
@@ -152,7 +148,7 @@ cc_library(
         "@yaml-cpp",
         "@com_google_protobuf//:protobuf",
     ] + select({
-        ":build_tls": [
+        ":build_seastar_tls": [
             "@gnutls",
         ],
         "//conditions:default": [],
