@@ -117,6 +117,7 @@ cc_library(
     hdrs = glob(
         ["include/seastar/testing/*.hh"],
     ),
+    copts = COPTS,
     defines = [
         "BOOST_TEST_ALTERNATIVE_INIT_API",
     ],
@@ -163,30 +164,35 @@ genrule(
 cc_binary(
     name = "io_tester",
     srcs = ["apps/io_tester/io_tester.cc"],
+    copts = COPTS,
     deps = [":seastar"],
 )
 
 cc_binary(
     name = "ioinfo",
     srcs = ["apps/io_tester/ioinfo.cc"],
+    copts = COPTS,
     deps = [":seastar"],
 )
 
 cc_binary(
     name = "iotune",
     srcs = ["apps/iotune/iotune.cc"],
+    copts = COPTS,
     deps = [":seastar"],
 )
 
 cc_binary(
     name = "rpc_tester",
     srcs = ["apps/rpc_tester/rpc_tester.cc"],
+    copts = COPTS,
     deps = [":seastar"],
 )
 
 cc_binary(
     name = "seawreck",
     srcs = ["apps/seawreck/seawreck.cc"],
+    copts = COPTS,
     deps = [":seastar"],
 )
 
@@ -194,6 +200,7 @@ cc_binary(
     cc_binary(
         name = file_name.replace("demos/", "").replace(".cc", ""),
         srcs = [file_name],
+        copts = COPTS,
         includes = ["demos"],
         deps = [
             ":seastar",
