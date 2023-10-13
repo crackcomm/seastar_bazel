@@ -5,14 +5,6 @@ exports_files(["LICENSE"])
 package(default_visibility = ["//visibility:public"])
 
 config_setting(
-    name = "build_seastar_tls",
-    define_values = {
-        "build_seastar_tls": "true",
-    },
-    visibility = ["//visibility:public"],
-)
-
-config_setting(
     name = "debug",
     values = {
         "compilation_mode": "dbg",
@@ -34,9 +26,10 @@ COPTS = ["-std=c++20"]
 DEFAULT_DEFINES = [
     "SEASTAR_HAVE_NUMA",
     "SEASTAR_SCHEDULING_GROUPS_COUNT=24",  # TODO: option
-    "SEASTAR_API_LEVEL=6",  # TODO: option
+    "SEASTAR_API_LEVEL=7",  # TODO: option
     "SEASTAR_SSTRING",  # TODO: option
     "SEASTAR_HAVE_LZ4_COMPRESS_DEFAULT",
+    "SEASTAR_STRERROR_R_CHAR_P",
     # TODO:
     # "SEASTAR_HAVE_DPDK",
 ]
@@ -58,71 +51,35 @@ LINKOPTS = [
     "-lstdc++fs",
 ]
 
-srcs_glob = [
-    "src/**/*.cc",
-    "src/**/*.hh",
-]
-
-srcs_exclude = [
-    "src/testing/*.cc",
-]
-
-hdrs_srcs = [
-    "include/seastar/http/chunk_parsers.hh",
-    "include/seastar/http/request_parser.hh",
-    "include/seastar/http/response_parser.hh",
-]
-
-hdrs_glob = ["include/seastar/**/*.hh"]
-
-hdrs_exclude = [
-    "include/seastar/testing/*.hh",
-    "include/seastar/testing/*.hh",
-]
-
 cc_library(
     name = "seastar",
-    srcs =
-        select({
-            ":build_seastar_tls": glob(
-                srcs_glob,
-                exclude = srcs_exclude,
-            ),
-            "//conditions:default": glob(
-                srcs_glob,
-                exclude = srcs_exclude + [
-                    "src/net/tls.cc",
-                ],
-            ),
-        }),
-    hdrs =
-        select({
-            ":build_seastar_tls": glob(
-                hdrs_glob,
-                exclude = hdrs_exclude,
-            ) + hdrs_srcs,
-            "//conditions:default": glob(
-                hdrs_glob,
-                exclude = hdrs_exclude + [
-                    "include/seastar/net/tls.hh",
-                ],
-            ) + hdrs_srcs,
-        }),
+    srcs = glob(
+        [
+            "src/**/*.cc",
+            "src/**/*.hh",
+        ],
+        exclude = [
+            "src/seastar.cc",
+            "src/testing/*.cc",
+        ],
+    ),
+    hdrs = glob(
+        ["include/seastar/**/*.hh"],
+        exclude = [
+            "include/seastar/testing/*.hh",
+            "include/seastar/testing/*.hh",
+        ],
+    ) + [
+        "include/seastar/http/chunk_parsers.hh",
+        "include/seastar/http/request_parser.hh",
+        "include/seastar/http/response_parser.hh",
+    ],
     copts = COPTS,
-    defines = select({
-        ":build_seastar_tls": [
-            "SEASTAR_HAVE_TLS",
-        ],
-        "//conditions:default": [
-            "SEASTAR_NO_TLS",
-        ],
-    }) + select({
+    defines = DEFAULT_DEFINES + select({
         ":debug": DEBUG_FLAGS,
         "//conditions:default": [],
-    }) + DEFAULT_DEFINES,
-    includes = [
-        "src",
-    ],
+    }),
+    includes = ["src"],
     linkopts = LINKOPTS,
     strip_include_prefix = "include",
     deps = [
@@ -147,12 +104,9 @@ cc_library(
         "@xfs",
         "@yaml-cpp",
         "@com_google_protobuf//:protobuf",
-    ] + select({
-        ":build_seastar_tls": [
-            "@gnutls",
-        ],
-        "//conditions:default": [],
-    }),
+        "@nettle",
+        "@gnutls",
+    ],
 )
 
 cc_library(
@@ -206,43 +160,61 @@ genrule(
     tools = ["@ragel//:ragelc"],
 )
 
-[
-    cc_binary(
-        name = app.replace("apps/", ""),
-        srcs = glob([app + "/*.cc"]),
-        additional_linker_inputs = [
-            "@gnutls",
-        ],
-        linkopts = ["-lgomp"],
-        deps = [
-            ":seastar",
-            "@boost//:accumulators",
-        ],
-    )
-    for app in glob(
-        ["apps/*"],
-        exclude = ["apps/CMakeLists.txt"],
-        exclude_directories = 0,
-    )
-]
+cc_binary(
+    name = "io_tester",
+    srcs = ["apps/io_tester/io_tester.cc"],
+    deps = [":seastar"],
+)
+
+cc_binary(
+    name = "ioinfo",
+    srcs = ["apps/io_tester/ioinfo.cc"],
+    deps = [":seastar"],
+)
+
+cc_binary(
+    name = "iotune",
+    srcs = ["apps/iotune/iotune.cc"],
+    deps = [":seastar"],
+)
+
+cc_binary(
+    name = "rpc_tester",
+    srcs = ["apps/rpc_tester/rpc_tester.cc"],
+    deps = [":seastar"],
+)
+
+cc_binary(
+    name = "seawreck",
+    srcs = ["apps/seawreck/seawreck.cc"],
+    deps = [":seastar"],
+)
 
 [
     cc_binary(
         name = file_name.replace("demos/", "").replace(".cc", ""),
         srcs = [file_name],
+        includes = ["demos"],
         deps = [
             ":seastar",
             "@boost//:accumulators",
         ],
     )
-    for file_name in glob(["demos/*.cc"])
-    if "tls" not in file_name
+    for file_name in glob(
+        ["demos/*.cc"],
+        exclude = ["demos/hello-cxx-module.cc"],
+    )
 ]
 
 [
     cc_test(
         name = file_name.replace("tests/unit/", "").replace(".cc", ""),
         srcs = glob(["tests/unit/*.hh"]) + [file_name],
+        copts = COPTS,
+        data = [
+            "tests/unit/cert.cfg.in",
+            "tests/unit/tls-ca-bundle.pem",
+        ] if "tls" in file_name else [],
         defines = ["SEASTAR_TESTING_MAIN"],
         includes = ["src"],
         deps = [
@@ -253,5 +225,4 @@ genrule(
         ],
     )
     for file_name in glob(["tests/unit/*_test.cc"])
-    if "tls" not in file_name
 ]

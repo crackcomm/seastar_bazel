@@ -19,13 +19,6 @@ bazel test @seastar//...
 * Build and run seastar tests.
 * Build seastar with DPDK support.
 
-### TLS
-
-Currently GnuTLS is not linking properly.
-
-If the issue gets resolved we plan to keep a patch for `SEASTAR_NO_TLS` and use a feature flag for TLS.
-Currently the feature flag can be set with `--define=build_seastar_tls=true`.
-
 ## Usage
 
 In your `WORKSPACE` file add:

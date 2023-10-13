@@ -67,10 +67,10 @@ def seastar_deps():
         http_archive,
         name = "yaml-cpp",
         build_file = "@seastar_bazel//:third_party/yaml-cpp.BUILD",
-        sha256 = "77ea1b90b3718aa0c324207cb29418f5bced2354c2e483a9523d98c3460af1ed",
-        strip_prefix = "yaml-cpp-yaml-cpp-0.6.3",
+        sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",
+        strip_prefix = "yaml-cpp-yaml-cpp-0.7.0",
         urls = [
-            "https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.6.3.tar.gz",
+            "https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.7.0.tar.gz",
         ],
     )
 
@@ -145,18 +145,18 @@ def seastar_deps():
         http_archive,
         name = "nettle",
         build_file = "@seastar_bazel//:third_party/nettle.BUILD",
-        sha256 = "ae7a42df026550b85daca8389b6a60ba6313b0567f374392e54918588a411e94",
-        strip_prefix = "nettle-3.4",
-        urls = ["https://ftp.gnu.org/gnu/nettle/nettle-3.4.tar.gz"],
+        sha256 = "661f5eb03f048a3b924c3a8ad2515d4068e40f67e774e8a26827658007e3bcf0",
+        strip_prefix = "nettle-3.7.3",
+        urls = ["https://ftp.gnu.org/gnu/nettle/nettle-3.7.3.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "gnutls",
         build_file = "@seastar_bazel//:third_party/gnutls.BUILD",
-        sha256 = "bfacf16e342949ffd977a9232556092c47164bd26e166736cf3459a870506c4b",
-        strip_prefix = "gnutls-3.6.12",
-        urls = ["https://mirrors.aliyun.com/macports/distfiles/gnutls/gnutls-3.6.12.tar.xz"],
+        sha256 = "b6e4e8bac3a950a3a1b7bdb0904979d4ab420a81e74de8636dd50b467d36f5a9",
+        strip_prefix = "gnutls-3.7.10",
+        urls = ["https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.10.tar.xz"],
     )
 
     maybe(

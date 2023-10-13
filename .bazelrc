@@ -1,11 +1,6 @@
-build --cxxopt=-std=c++20
-
 # Release flags
 build:release --copt -O3
 build:release --copt -DNDEBUG
-build:release --copt -march=native
-build:release --copt -mtune=native
-build:release --copt -ffast-math
 
 # Put user-specific options in .bazelrc.user
 try-import %workspace%/.bazelrc.user

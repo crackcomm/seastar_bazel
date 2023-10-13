@@ -26,13 +26,14 @@ configure_make(
     configure_in_place = True,
     configure_options = [
         "--disable-doc",
+        "--disable-shared",
     ],
     lib_source = ":all",
     out_lib_dir = "lib64",
-    out_shared_libs = ["libnettle.so"],
-    out_static_libs = ["libnettle.a"],
-    visibility = ["//visibility:public"],
-    deps = [
-        "@gmp",
+    out_static_libs = [
+        "libhogweed.a",
+        "libnettle.a",
     ],
+    visibility = ["//visibility:public"],
+    deps = ["@gmp"],
 )
