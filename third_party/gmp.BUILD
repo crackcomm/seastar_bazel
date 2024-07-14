@@ -28,6 +28,7 @@ configure_make(
     ],
     build_data = glob(["**/*"]),
     configure_in_place = True,
+    configure_options = ["--with-pic"],
     lib_source = ":all",
     out_static_libs = ["libgmp.a"],
     visibility = ["//visibility:public"],
