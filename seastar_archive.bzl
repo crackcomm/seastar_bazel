@@ -1,8 +1,8 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def seastar_archive():
-    SEASTAR_COMMIT = "4dc3871ed9f32816e7a03895e98c86a5502d980f"
-    SEASTAR_SHA256 = "15c1ce5986ddd66939009116f2ecfc1e61f57e11640a34f0840f8a43bb12c477"
+    SEASTAR_COMMIT = "a3ccb7a218da37e3ca0874ea405be9e530d68d30"
+    SEASTAR_SHA256 = "fe3189445c65982f4f72563bd1f5d12813e5d26efacf6a0e03816df9ecaa37e7"
 
     if not native.existing_rule("seastar"):
         http_archive(
