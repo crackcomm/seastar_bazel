@@ -25,9 +25,9 @@ def seastar_deps():
     maybe(
         http_archive,
         name = "com_google_protobuf",
-        sha256 = "cfcba2df10feec52a84208693937c17a4b5df7775e1635c1e3baffc487b24c9b",
-        strip_prefix = "protobuf-3.9.2",
-        urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.9.2.zip"],
+        sha256 = "5babb8571f1cceafe0c18e13ddb3be556e87e12ceea3463d6b0d0064e6cc1ac3",
+        strip_prefix = "protobuf-21.9",
+        urls = ["https://github.com/protocolbuffers/protobuf/archive/v21.9.zip"],
     )
 
     maybe(
