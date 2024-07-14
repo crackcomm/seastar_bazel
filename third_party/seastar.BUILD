@@ -11,15 +11,18 @@ config_setting(
     },
 )
 
-#proto_library(
-#    name = "metrics2_proto",
-#    srcs = ["src/proto/metrics2.proto"],
-#)
-#
-#cc_proto_library(
-#    name = "metrics2_cc_proto",
-#    deps = [":metrics2_proto"],
-#)
+proto_library(
+    name = "metrics2_proto",
+    srcs = ["src/proto/metrics2.proto"],
+    deps = [
+        "@com_google_protobuf//:timestamp_proto",
+    ],
+)
+
+cc_proto_library(
+    name = "metrics2_cc_proto",
+    deps = [":metrics2_proto"],
+)
 
 COPTS = ["-std=c++20"]
 
@@ -83,7 +86,7 @@ cc_library(
     linkopts = LINKOPTS,
     strip_include_prefix = "include",
     deps = [
-        #":metrics2_cc_proto",
+        ":metrics2_cc_proto",
         "@boost//:asio",
         "@boost//:endian",
         "@boost//:filesystem",
