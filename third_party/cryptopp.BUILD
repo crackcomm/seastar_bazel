@@ -1,10 +1,10 @@
-licenses(["notice"])
-
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
-exports_files(["License.txt"])
+licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
+
+exports_files(["License.txt"])
 
 filegroup(
     name = "srcs",

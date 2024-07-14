@@ -15,9 +15,9 @@ bazel test @seastar//...
 
 ## Plans for improvement
 
-* Release and feature flags.
-* Build and run seastar tests.
-* Build seastar with DPDK support.
+- Release and feature flags.
+- Build and run seastar tests.
+- Build seastar with DPDK support.
 
 ## Usage
 
@@ -51,8 +51,8 @@ To use local version of seastar use `new_local_repository` rule before `seastar`
 ```starlark
 new_local_repository(
     name = "seastar",
-    path = "my-seastar",
     build_file = "@seastar_bazel//:third_party/seastar.BUILD",
+    path = "my-seastar",
 )
 ```
 

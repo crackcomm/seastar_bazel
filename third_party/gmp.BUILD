@@ -1,10 +1,10 @@
-licenses(["notice"])  # LGPL3
-
 load("@rules_foreign_cc//foreign_cc:configure.bzl", "configure_make")
 
-exports_files(["COPYING.LESSERv3"])
+licenses(["notice"])  # LGPL3
 
 package(default_visibility = ["//visibility:public"])
+
+exports_files(["COPYING.LESSERv3"])
 
 filegroup(
     name = "all",

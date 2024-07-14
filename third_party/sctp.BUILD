@@ -1,6 +1,6 @@
-licenses(["permissive"])  # LGPL headers only
-
 load("@seastar_bazel//third_party:common.bzl", "template_rule")
+
+licenses(["permissive"])  # LGPL headers only
 
 exports_files(["COPYING.lib"])
 

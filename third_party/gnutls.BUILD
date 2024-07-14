@@ -1,7 +1,6 @@
-licenses(["permissive"])  # LGPL headers only
-
 load("@rules_foreign_cc//foreign_cc:configure.bzl", "configure_make")
-load("@seastar_bazel//third_party:common.bzl", "template_rule")
+
+licenses(["permissive"])  # LGPL headers only
 
 exports_files(["LICENSE"])
 

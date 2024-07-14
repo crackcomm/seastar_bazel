@@ -1,8 +1,8 @@
 licenses(["notice"])  # Apache 2.0
 
-exports_files(["LICENSE"])
-
 package(default_visibility = ["//visibility:public"])
+
+exports_files(["LICENSE"])
 
 config_setting(
     name = "debug",
