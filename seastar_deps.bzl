@@ -98,22 +98,6 @@ def seastar_deps():
 
     maybe(
         http_archive,
-        name = "cryptopp",
-        build_file = "@seastar_bazel//:third_party/cryptopp.BUILD",
-        sha256 = "8f64cf09cf4f61d5d74bca53574b8cc9959186cc0f072a2e6597e4999d6ad5db",
-        strip_prefix = "cryptopp-CRYPTOPP_8_5_0",
-        urls = [
-            "https://github.com/weidai11/cryptopp/archive/CRYPTOPP_8_5_0.tar.gz",
-        ],
-        # We do it like redpanda
-        patch_cmds = [
-            "curl -s -o CMakeLists.txt https://raw.githubusercontent.com/noloader/cryptopp-cmake/CRYPTOPP_8_5_0/CMakeLists.txt",
-            "curl -s -o cryptopp-config.cmake https://raw.githubusercontent.com/noloader/cryptopp-cmake/CRYPTOPP_8_5_0/cryptopp-config.cmake",
-        ],
-    )
-
-    maybe(
-        http_archive,
         name = "lz4",
         build_file = "@seastar_bazel//:third_party/lz4.BUILD",
         sha256 = "658ba6191fa44c92280d4aa2c271b0f4fbc0e34d249578dd05e50e76d0e5efcc",
