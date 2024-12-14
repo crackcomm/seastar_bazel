@@ -24,6 +24,15 @@ def seastar_deps():
 
     maybe(
         http_archive,
+        name = "zstd",
+        build_file = "@seastar_bazel//:third_party/zstd.BUILD",
+        sha256 = "3b1c3b46e416d36931efd34663122d7f51b550c87f74de2d38249516fe7d8be5",
+        strip_prefix = "zstd-1.5.6/lib",
+        urls = ["https://github.com/facebook/zstd/archive/v1.5.6.zip"],
+    )
+
+    maybe(
+        http_archive,
         name = "com_google_protobuf",
         sha256 = "5babb8571f1cceafe0c18e13ddb3be556e87e12ceea3463d6b0d0064e6cc1ac3",
         strip_prefix = "protobuf-21.9",

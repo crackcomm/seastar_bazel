@@ -1,5 +1,18 @@
+# Enforce stricter environment rules, which eliminates some non-hermetic
+# behavior and therefore improves both the remote cache hit rate and the
+# correctness and repeatability of the build.
+common --incompatible_strict_action_env=true
+
+# Default to clang on host
+common --repo_env=CC=clang
+common --repo_env=CXX=clang++
+build --action_env=CC=clang
+build --action_env=CXX=clang++
+build --host_action_env=CC=clang
+build --host_action_env=CXX=clang++
+
 # Release flags
-build:release --copt -O3
+build:release --copt -O2
 build:release --copt -DNDEBUG
 
 # Put user-specific options in .bazelrc.user
