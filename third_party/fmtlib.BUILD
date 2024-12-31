@@ -1,3 +1,5 @@
+package(default_visibility = ["//visibility:public"])
+
 licenses(["notice"])  # MIT
 
 exports_files(["LICENSE.rst"])
@@ -5,16 +7,9 @@ exports_files(["LICENSE.rst"])
 cc_library(
     name = "fmtlib",
     srcs = [
-        #"src/fmt.cc",
         "src/format.cc",
+        "src/os.cc",
     ],
     hdrs = glob(["include/fmt/*.h"]),
-    defines = [
-        "FMT_HEADER_ONLY",
-        "FMT_VERSION",
-    ],
-    includes = [
-        "include",
-    ],
-    visibility = ["//visibility:public"],
+    includes = ["include"],
 )

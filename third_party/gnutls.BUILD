@@ -31,5 +31,9 @@ configure_make(
     lib_source = ":all",
     out_static_libs = ["libgnutls.a"],
     visibility = ["//visibility:public"],
-    deps = ["@nettle"],
+    deps = [
+        "@nettle",
+        "@zlib",
+        "@zstd",
+    ],
 )

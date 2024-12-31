@@ -1,3 +1,5 @@
+common --noenable_bzlmod
+
 # Enforce stricter environment rules, which eliminates some non-hermetic
 # behavior and therefore improves both the remote cache hit rate and the
 # correctness and repeatability of the build.
@@ -14,6 +16,16 @@ build --host_action_env=CXX=clang++
 # Release flags
 build:release --copt -O2
 build:release --copt -DNDEBUG
+
+# Use the latest C++ standard
+# If you want to disable this and encounter following error:
+#   undefined symbol: absl::lts_20240116::log_internal::LogMessageFatal...
+# This applies only to metrics library with protobuf.
+# See https://github.com/abseil/abseil-cpp/issues/1747
+build --cxxopt=-std=c++23
+build --host_cxxopt=-std=c++23
+
+common --test_output=all
 
 # Put user-specific options in .bazelrc.user
 try-import %workspace%/.bazelrc.user

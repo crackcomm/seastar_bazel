@@ -10,9 +10,7 @@ Files: third_party/colm.BUILD
        third_party/gnutls.BUILD
        third_party/lz4.BUILD
        third_party/ragel.BUILD
-       third_party/readerwriterqueue.BUILD
        third_party/sctp.BUILD
-       third_party/seastar.BUILD
        third_party/systemtap-sdt.BUILD
        third_party/uuid.BUILD
        third_party/xfs.BUILD

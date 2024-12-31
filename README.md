@@ -2,8 +2,6 @@
 
 This repository was created as a means of building seastar applications using Bazel.
 
-It can build hello world application but it's not yet ready for production.
-
 ## Tests
 
 Tests and [demos](https://github.com/scylladb/seastar/tree/master/demos) can be run using following commands:
@@ -15,8 +13,6 @@ bazel test @seastar//...
 
 ## Plans for improvement
 
-- Release and feature flags.
-- Build and run seastar tests.
 - Build seastar with DPDK support.
 
 ## Usage
