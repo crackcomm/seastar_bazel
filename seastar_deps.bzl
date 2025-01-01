@@ -38,7 +38,7 @@ def seastar_deps():
 
     maybe(
         http_archive,
-        name = "zlib",
+        name = "net_zlib_zlib",
         build_file = "@seastar_bazel//third_party:zlib.BUILD",
         sha256 = "d14c38e313afc35a9a8760dadf26042f51ea0f5d154b0630a31da0540107fb98",
         strip_prefix = "zlib-1.2.13",
@@ -50,7 +50,7 @@ def seastar_deps():
 
     maybe(
         http_archive,
-        name = "zstd",
+        name = "com_github_facebook_zstd",
         build_file = "@seastar_bazel//third_party:zstd.BUILD",
         sha256 = "3b1c3b46e416d36931efd34663122d7f51b550c87f74de2d38249516fe7d8be5",
         strip_prefix = "zstd-1.5.6/lib",
@@ -71,9 +71,6 @@ def seastar_deps():
         sha256 = "896d511f057cad281e93103be6ccf3f31ce1b66322ea7fe733232651d16b1cdb",
         strip_prefix = "rules_boost-63a91c1464eaf1b918a5df4cf3ffaa9ca852ab11",
         url = "https://github.com/nelhage/rules_boost/archive/63a91c1464eaf1b918a5df4cf3ffaa9ca852ab11.tar.gz",
-        repo_mapping = {
-            "@net_zlib_zlib": "@zlib",
-        },
     )
 
     maybe(
