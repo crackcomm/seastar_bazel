@@ -21,32 +21,32 @@ CORE_DEFINES = [
     "SEASTAR_API_LEVEL=$(API_LEVEL)",
     "SEASTAR_STRERROR_R_CHAR_P",
 ] + select({
-    ":use_sstring": ["SEASTAR_SSTRING"],
+    "@seastar//:use_sstring": ["SEASTAR_SSTRING"],
     "//conditions:default": [],
 }) + select({
-    ":use_logger_compile_time_fmt": ["SEASTAR_LOGGER_COMPILE_TIME_FMT"],
+    "@seastar//:use_logger_compile_time_fmt": ["SEASTAR_LOGGER_COMPILE_TIME_FMT"],
     "//conditions:default": [],
 })
 
 CORE_LOCAL_DEFINES = [
     "SEASTAR_DEFERRED_ACTION_REQUIRE_NOEXCEPT",
 ] + select({
-    ":use_numa": ["SEASTAR_HAVE_NUMA"],
+    "@seastar//:use_numa": ["SEASTAR_HAVE_NUMA"],
     "//conditions:default": [],
 }) + select({
-    ":use_uring": ["SEASTAR_HAVE_URING"],
+    "@seastar//:use_uring": ["SEASTAR_HAVE_URING"],
     "//conditions:default": [],
 }) + select({
-    ":use_dpdk": ["SEASTAR_HAVE_DPDK"],
+    "@seastar//:use_dpdk": ["SEASTAR_HAVE_DPDK"],
     "//conditions:default": [],
 }) + select({
-    ":use_default_allocator": ["SEASTAR_DEFAULT_ALLOCATOR"],
+    "@seastar//:use_default_allocator": ["SEASTAR_DEFAULT_ALLOCATOR"],
     "//conditions:default": [],
 }) + select({
-    ":use_hwloc": ["SEASTAR_HAVE_HWLOC"],
+    "@seastar//:use_hwloc": ["SEASTAR_HAVE_HWLOC"],
     "//conditions:default": [],
 }) + select({
-    ":use_systemtap": ["SEASTAR_HAVE_SYSTEMTAP_SDT"],
+    "@seastar//:use_systemtap": ["SEASTAR_HAVE_SYSTEMTAP_SDT"],
     "//conditions:default": [],
 })
 
@@ -66,7 +66,7 @@ DEFAULT_DEFINES = CORE_DEFINES + select({
 })
 
 DEFAULT_LOCAL_DEFINES = CORE_LOCAL_DEFINES + select({
-    ":use_debug_allocations": ["SEASTAR_DEBUG_ALLOCATIONS"],
+    "@seastar//:use_debug_allocations": ["SEASTAR_DEBUG_ALLOCATIONS"],
     "//conditions:default": [],
 }) + select({
     ":debug": DEBUG_LOCAL_DEFINES,
@@ -102,12 +102,11 @@ def seastar_cc_test(**kwargs):
     """A Seastar C++ library."""
     native.cc_test(
         copts = COPTS + kwargs.get("copts", []),
-        defines = DEFAULT_DEFINES + ["SEASTAR_TESTING_MAIN"] + kwargs.get("defines", []),
+        defines = DEFAULT_DEFINES + kwargs.get("defines", []),
         local_defines = DEFAULT_LOCAL_DEFINES + kwargs.get("local_defines", []),
         toolchains = TOOLCHAINS,
         deps = [
-            "@seastar//:testing",
-            "@boost//:accumulators",
+            "@seastar//:testing_main",
             "@boost//:test",
             "@boost//:test.a",
         ] + kwargs.get("deps", []),

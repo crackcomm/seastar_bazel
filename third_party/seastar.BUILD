@@ -504,9 +504,13 @@ METRICS_SRCS = [
 ]
 
 seastar_cc_library(
+    name = "headers",
+    hdrs = CORE_HEADERS,
+)
+
+seastar_cc_library(
     name = "core",
     srcs = CORE_SRCS,
-    hdrs = CORE_HEADERS,
     linkopts = [
         "-ldl",
         "-lrt",
@@ -515,6 +519,7 @@ seastar_cc_library(
         "//conditions:default": [],
     }),
     deps = [
+        ":headers",
         "@boost//:asio",
         "@boost//:endian",
         "@boost//:intrusive",
@@ -626,6 +631,13 @@ seastar_cc_library(
         ":core",
         "@boost//:test.so",
     ],
+)
+
+seastar_cc_library(
+    name = "testing_main",
+    srcs = ["@monorepo_ocxmr//ocxmr/testing:seastar_test_main.cc"],
+    deps = [":testing"],
+    alwayslink = 1,
 )
 
 seastar_cc_library(
