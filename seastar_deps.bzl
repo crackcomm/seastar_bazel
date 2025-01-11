@@ -159,18 +159,18 @@ def seastar_deps():
         http_archive,
         name = "nettle",
         build_file = "@seastar_bazel//third_party:nettle.BUILD",
-        sha256 = "661f5eb03f048a3b924c3a8ad2515d4068e40f67e774e8a26827658007e3bcf0",
-        strip_prefix = "nettle-3.7.3",
-        urls = ["https://ftp.gnu.org/gnu/nettle/nettle-3.7.3.tar.gz"],
+        sha256 = "b0fcdd7fc0cdea6e80dcf1dd85ba794af0d5b4a57e26397eee3bc193272d9132",
+        strip_prefix = "nettle-3.10.1",
+        urls = ["https://ftp.gnu.org/gnu/nettle/nettle-3.10.1.tar.gz"],
     )
 
     maybe(
         http_archive,
         name = "gnutls",
         build_file = "@seastar_bazel//third_party:gnutls.BUILD",
-        sha256 = "b6e4e8bac3a950a3a1b7bdb0904979d4ab420a81e74de8636dd50b467d36f5a9",
-        strip_prefix = "gnutls-3.7.10",
-        urls = ["https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.10.tar.xz"],
+        sha256 = "ac4f020e583880b51380ed226e59033244bc536cad2623f2e26f5afa2939d8fb",
+        strip_prefix = "gnutls-3.8.8",
+        urls = ["https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-3.8.8.tar.xz"],
     )
 
     maybe(
