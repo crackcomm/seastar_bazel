@@ -1,0 +1,6 @@
+UseColor: true
+WarningsAsErrors: "*"
+
+Checks: >
+  clang-analyzer-core.NullDereference,
+  -clang-diagnostic-pragma-once-outside-header

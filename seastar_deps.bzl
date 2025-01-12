@@ -213,3 +213,13 @@ def seastar_deps():
             "https://github.com/axboe/liburing/archive/refs/tags/liburing-2.5.tar.gz",
         ],
     )
+
+    maybe(
+        http_archive,
+        name = "bazel_clang_tidy",
+        integrity = "sha256-bVCXKTSdmB2f9EKUizJIm8mwRnAmbuFNXRgKtNkjgxM=",
+        strip_prefix = "bazel_clang_tidy-0baa068ae3cdb5cc450e61afb4f9f43a2b329716",
+        urls = [
+            "https://github.com/crackcomm/bazel_clang_tidy/archive/0baa068ae3cdb5cc450e61afb4f9f43a2b329716.tar.gz",
+        ],
+    )
