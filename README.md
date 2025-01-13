@@ -11,10 +11,6 @@ bazel run @seastar//:hello-world
 bazel test @seastar//...
 ```
 
-## Plans for improvement
-
-- Build seastar with DPDK support.
-
 ## Usage
 
 In your `WORKSPACE` file add:
@@ -51,6 +47,14 @@ new_local_repository(
     path = "my-seastar",
 )
 ```
+
+## Plans for improvement
+
+- Build seastar with DPDK support.
+
+---
+
+If you have any questions or suggestions, feel free to open an issue.
 
 ---
 
