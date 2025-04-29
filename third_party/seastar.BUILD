@@ -635,7 +635,7 @@ seastar_cc_library(
 
 seastar_cc_library(
     name = "testing_main",
-    srcs = ["@monorepo_ocxmr//ocxmr/testing:seastar_test_main.cc"],
+    srcs = ["@seastar_bazel//third_party:seastar_test_main.cc"],
     deps = [":testing"],
     alwayslink = 1,
 )

@@ -13,6 +13,7 @@ exports_files([
     "sctp.BUILD",
     "seastar.BUILD",
     "seastar_defs.bzl",
+    "seastar_test_main.cc",
     "systemtap-sdt.BUILD",
     "uring.BUILD",
     "uuid.BUILD",
