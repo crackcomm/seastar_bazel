@@ -20,4 +20,10 @@ cc_library(
         "zstd.h",
         "zstd_errors.h",
     ],
+    includes = [
+      ".",
+      "common",
+      "compress",
+      "decompress",
+    ],
 )
