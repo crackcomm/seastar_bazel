@@ -524,10 +524,7 @@ seastar_cc_library(
     linkopts = [
         "-ldl",
         "-lrt",
-    ] + select({
-        ":use_numa": ["-lnuma"],
-        "//conditions:default": [],
-    }),
+    ],
     deps = [
         ":headers",
         "@boost//:asio",
@@ -540,6 +537,7 @@ seastar_cc_library(
         "@fmtlib",
         "@gnutls",
         "@sctp",
+        "//external:valgrind",
         "@xfs",
         "@yaml-cpp",
     ] + select({
@@ -553,6 +551,9 @@ seastar_cc_library(
         "//conditions:default": [],
     }) + select({
         ":use_systemtap": ["@systemtap-sdt"],
+        "//conditions:default": [],
+    }) + select({
+        ":use_numa": ["//external:numa"],
         "//conditions:default": [],
     }),
 )

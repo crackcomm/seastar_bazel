@@ -223,3 +223,13 @@ def seastar_deps():
             "https://github.com/crackcomm/bazel_clang_tidy/archive/0baa068ae3cdb5cc450e61afb4f9f43a2b329716.tar.gz",
         ],
     )
+
+    native.bind(
+        name = "numa",
+        actual = "@seastar_bazel//third_party/numactl:numa",
+    )
+
+    native.bind(
+        name = "valgrind",
+        actual = "@seastar_bazel//third_party/valgrind",
+    )
