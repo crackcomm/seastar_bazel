@@ -4,7 +4,6 @@ exports_files([
     "cares.BUILD",
     "colm.BUILD",
     "common.bzl",
-    "cryptopp.BUILD",
     "fmtlib.BUILD",
     "gmp.BUILD",
     "gnutls.BUILD",
