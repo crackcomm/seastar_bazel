@@ -59,6 +59,11 @@ bool_flag(
     build_setting_default = False,
 )
 
+bool_flag(
+    name = "stack_guards",
+    build_setting_default = False,
+)
+
 int_flag(
     name = "api_level",
     build_setting_default = 7,
@@ -114,6 +119,11 @@ config_setting(
 config_setting(
     name = "use_debug_allocations",
     flag_values = {":debug_allocations": "true"},
+)
+
+config_setting(
+    name = "use_stack_guards",
+    flag_values = {":stack_guards": "true"},
 )
 
 config_setting(

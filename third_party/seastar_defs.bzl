@@ -9,7 +9,10 @@ COPTS = [
     "-Wno-unused-result",
     "-Wno-unused-parameter",
     "-Wno-unused-but-set-variable",
-]
+] + select({
+    "@seastar//:use_stack_guards": ["-fstack-clash-protection"],
+    "//conditions:default": [],
+})
 
 # Some more:
 #   SEASTAR_OVERRIDE_ALLOCATOR_PAGE_SIZE
@@ -25,6 +28,9 @@ CORE_DEFINES = [
     "//conditions:default": [],
 }) + select({
     "@seastar//:use_logger_compile_time_fmt": ["SEASTAR_LOGGER_COMPILE_TIME_FMT"],
+    "//conditions:default": [],
+}) + select({
+    "@seastar//:use_stack_guards": ["SEASTAR_THREAD_STACK_GUARDS"],
     "//conditions:default": [],
 })
 
