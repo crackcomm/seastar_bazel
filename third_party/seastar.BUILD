@@ -537,7 +537,7 @@ seastar_cc_library(
         "@fmtlib",
         "@gnutls",
         "@sctp",
-        "//external:valgrind",
+        "@seastar_bazel//third_party/valgrind",
         "@xfs",
         "@yaml-cpp",
     ] + select({
@@ -553,7 +553,7 @@ seastar_cc_library(
         ":use_systemtap": ["@systemtap-sdt"],
         "//conditions:default": [],
     }) + select({
-        ":use_numa": ["//external:numa"],
+        ":use_numa": ["@seastar_bazel//third_party/numactl:numa"],
         "//conditions:default": [],
     }),
 )
