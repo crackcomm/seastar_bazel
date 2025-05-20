@@ -1,5 +1,3 @@
-load("@rules_cc//cc:cc_library.bzl", "cc_library")
-
 HDR_FILES = [
     "valgrind/valgrind.h",
     "valgrind/callgrind.h",

@@ -81,6 +81,11 @@ bool_flag(
     build_setting_default = False,
 )
 
+bool_flag(
+    name = "cpp_modules",
+    build_setting_default = False,
+)
+
 config_setting(
     name = "use_sstring",
     flag_values = {":sstring": "true"},
@@ -131,11 +136,16 @@ config_setting(
     flag_values = {":logger_compile_time_fmt": "true"},
 )
 
+config_setting(
+    name = "use_cpp_modules",
+    flag_values = {":cpp_modules": "true"},
+)
+
 proto_library(
     name = "metrics2_proto",
     srcs = ["src/proto/metrics2.proto"],
     strip_import_prefix = "src",
-    deps = ["@com_google_protobuf//:timestamp_proto"],
+    deps = ["@protobuf//:timestamp_proto"],
 )
 
 cc_proto_library(
@@ -143,390 +153,66 @@ cc_proto_library(
     deps = [":metrics2_proto"],
 )
 
-CORE_HEADERS = [
-    "include/seastar/core/abort_on_expiry.hh",
-    "include/seastar/core/abort_source.hh",
-    "include/seastar/core/abortable_fifo.hh",
-    "include/seastar/core/bitset-iter.hh",
-    "include/seastar/core/byteorder.hh",
-    "include/seastar/core/cacheline.hh",
-    "include/seastar/core/chunked_fifo.hh",
-    "include/seastar/core/coroutine.hh",
-    "include/seastar/core/deleter.hh",
-    "include/seastar/core/do_with.hh",
-    "include/seastar/core/format.hh",
-    "include/seastar/core/function_traits.hh",
-    "include/seastar/core/future.hh",
-    "include/seastar/core/iostream-impl.hh",
-    "include/seastar/core/iostream.hh",
-    "include/seastar/core/loop.hh",
-    "include/seastar/core/lowres_clock.hh",
-    "include/seastar/core/preempt.hh",
-    "include/seastar/core/print.hh",
-    "include/seastar/core/scattered_message.hh",
-    "include/seastar/core/scheduling.hh",
-    "include/seastar/core/semaphore.hh",
-    "include/seastar/core/shard_id.hh",
-    "include/seastar/core/shared_ptr.hh",
-    "include/seastar/core/shared_ptr_debug_helper.hh",
-    "include/seastar/core/sstring.hh",
-    "include/seastar/core/task.hh",
-    "include/seastar/core/temporary_buffer.hh",
-    "include/seastar/core/thread.hh",
-    "include/seastar/core/thread_impl.hh",
-    "include/seastar/core/timed_out_error.hh",
-    "include/seastar/core/timer-set.hh",
-    "include/seastar/core/timer.hh",
-    "include/seastar/core/unaligned.hh",
-    "include/seastar/coroutine/exception.hh",
-    "include/seastar/net/const.hh",
-    "include/seastar/net/packet.hh",
-    "include/seastar/util/backtrace.hh",
-    "include/seastar/util/bool_class.hh",
-    "include/seastar/util/critical_alloc_section.hh",
-    "include/seastar/util/eclipse.hh",
-    "include/seastar/util/indirect.hh",
-    "include/seastar/util/is_smart_ptr.hh",
-    "include/seastar/util/modules.hh",
-    "include/seastar/util/noncopyable_function.hh",
-    "include/seastar/util/optimized_optional.hh",
-    "include/seastar/util/std-compat.hh",
-    "include/seastar/util/used_size.hh",
-    "include/seastar/util/variant_utils.hh",
+MODULE_SRCS = glob(
+    ["src/**/*.cc"],
+    exclude = [
+        "src/seastar.cc",
+        "src/testing/*.cc",
+    ],
+)
 
-    # level 2
-    "include/seastar/core/abort_on_ebadf.hh",
-    "include/seastar/core/align.hh",
-    "include/seastar/core/aligned_buffer.hh",
-    "include/seastar/core/app-template.hh",
-    "include/seastar/core/bitops.hh",
-    "include/seastar/core/circular_buffer.hh",
-    "include/seastar/core/circular_buffer_fixed_capacity.hh",
-    "include/seastar/core/condition-variable.hh",
-    "include/seastar/core/distributed.hh",
-    "include/seastar/core/enum.hh",
-    "include/seastar/core/file-types.hh",
-    "include/seastar/core/file.hh",
-    "include/seastar/core/fstream.hh",
-    "include/seastar/core/gate.hh",
-    "include/seastar/core/idle_cpu_handler.hh",
-    "include/seastar/core/internal/api-level.hh",
-    "include/seastar/core/internal/estimated_histogram.hh",
-    "include/seastar/core/internal/io_desc.hh",
-    "include/seastar/core/internal/io_request.hh",
-    "include/seastar/core/internal/io_sink.hh",
-    "include/seastar/core/internal/pollable_fd.hh",
-    "include/seastar/core/internal/run_in_background.hh",
-    "include/seastar/core/io_priority_class.hh",
-    "include/seastar/core/make_task.hh",
-    "include/seastar/core/manual_clock.hh",
-    "include/seastar/core/map_reduce.hh",
-    "include/seastar/core/memory.hh",
-    "include/seastar/core/metrics.hh",
-    "include/seastar/core/metrics_api.hh",
-    "include/seastar/core/metrics_registration.hh",
-    "include/seastar/core/metrics_types.hh",
-    "include/seastar/core/on_internal_error.hh",
-    "include/seastar/core/posix.hh",
-    "include/seastar/core/queue.hh",
-    "include/seastar/core/ragel.hh",
-    "include/seastar/core/reactor.hh",
-    "include/seastar/core/reactor_config.hh",
-    "include/seastar/core/resource.hh",
-    "include/seastar/core/scheduling_specific.hh",
-    "include/seastar/core/scollectd.hh",
-    "include/seastar/core/seastar.hh",
-    "include/seastar/core/sharded.hh",
-    "include/seastar/core/shared_mutex.hh",
-    "include/seastar/core/smp.hh",
-    "include/seastar/core/smp_options.hh",
-    "include/seastar/core/stream.hh",
-    "include/seastar/core/thread_cputime_clock.hh",
-    "include/seastar/core/transfer.hh",
-    "include/seastar/core/when_all.hh",
-    "include/seastar/coroutine/generator.hh",
-    "include/seastar/net/api.hh",
-    "include/seastar/net/byteorder.hh",
-    "include/seastar/net/inet_address.hh",
-    "include/seastar/net/socket_defs.hh",
-    "include/seastar/net/tls.hh",
-    "include/seastar/net/unix_address.hh",
-    "include/seastar/util/iostream.hh",
-    "include/seastar/util/log-cli.hh",
-    "include/seastar/util/log-impl.hh",
-    "include/seastar/util/log.hh",
-    "include/seastar/util/memory_diagnostics.hh",
-    "include/seastar/util/program-options.hh",
-    "include/seastar/util/sampler.hh",
-    "include/seastar/util/short_streams.hh",
-    "include/seastar/util/spinlock.hh",
-    "include/seastar/util/string_utils.hh",
-    "include/seastar/util/tuple_utils.hh",
-
-    # level 3 (used only in .cc files)
-    "include/seastar/core/alien.hh",
-    "include/seastar/core/array_map.hh",
-    "include/seastar/core/exception_hacks.hh",
-    "include/seastar/core/execution_stage.hh",
-    "include/seastar/core/fair_queue.hh",
-    "include/seastar/core/fsnotify.hh",
-    "include/seastar/core/fsqual.hh",
-    "include/seastar/core/future-util.hh",
-    "include/seastar/core/internal/buffer_allocator.hh",
-    "include/seastar/core/internal/io_intent.hh",
-    "include/seastar/core/internal/poll.hh",
-    "include/seastar/core/internal/read_state.hh",
-    "include/seastar/core/internal/stall_detector.hh",
-    "include/seastar/core/internal/uname.hh",
-    "include/seastar/core/io_intent.hh",
-    "include/seastar/core/io_queue.hh",
-    "include/seastar/core/linux-aio.hh",
-    "include/seastar/core/polymorphic_temporary_buffer.hh",
-    "include/seastar/core/prefetch.hh",
-    "include/seastar/core/relabel_config.hh",
-    "include/seastar/core/report_exception.hh",
-    "include/seastar/core/scollectd_api.hh",
-    "include/seastar/core/signal.hh",
-    "include/seastar/core/sleep.hh",
-    "include/seastar/core/stall_sampler.hh",
-    "include/seastar/core/systemwide_memory_barrier.hh",
-    "include/seastar/core/with_scheduling_group.hh",
-    "include/seastar/core/with_timeout.hh",
-    "include/seastar/coroutine/as_future.hh",
-    "include/seastar/net/arp.hh",
-    "include/seastar/net/config.hh",
-    "include/seastar/net/dhcp.hh",
-    "include/seastar/net/dns.hh",
-    "include/seastar/net/dpdk.hh",
-    "include/seastar/net/ethernet.hh",
-    "include/seastar/net/ip.hh",
-    "include/seastar/net/ip_checksum.hh",
-    "include/seastar/net/ipv4_address.hh",
-    "include/seastar/net/ipv6_address.hh",
-    "include/seastar/net/native-stack.hh",
-    "include/seastar/net/net.hh",
-    "include/seastar/net/packet-util.hh",
-    "include/seastar/net/posix-stack.hh",
-    "include/seastar/net/proxy.hh",
-    "include/seastar/net/stack.hh",
-    "include/seastar/net/tcp-stack.hh",
-    "include/seastar/net/tcp.hh",
-    "include/seastar/net/toeplitz.hh",
-    "include/seastar/net/udp.hh",
-    "include/seastar/net/virtio-interface.hh",
-    "include/seastar/net/virtio.hh",
-    "include/seastar/util/alloc_failure_injector.hh",
-    "include/seastar/util/conversions.hh",
-    "include/seastar/util/defer.hh",
-    "include/seastar/util/exceptions.hh",
-    "include/seastar/util/file.hh",
-    "include/seastar/util/function_input_iterator.hh",
-    "include/seastar/util/internal/iovec_utils.hh",
-    "include/seastar/util/internal/magic.hh",
-    "include/seastar/util/later.hh",
-    "include/seastar/util/print_safe.hh",
-    "include/seastar/util/process.hh",
-    "include/seastar/util/read_first_line.hh",
-    "include/seastar/util/reference_wrapper.hh",
-    "include/seastar/util/shared_token_bucket.hh",
-    "include/seastar/util/tmp_file.hh",
-    "include/seastar/util/transform_iterator.hh",
-
-    # level 4 (used only in tests and applications)
-    "include/seastar/core/checked_ptr.hh",
-    "include/seastar/core/dpdk_rte.hh",
-    "include/seastar/core/expiring_fifo.hh",
-    "include/seastar/core/layered_file.hh",
-    "include/seastar/core/pipe.hh",
-    "include/seastar/core/rwlock.hh",
-    "include/seastar/core/shared_future.hh",
-    "include/seastar/core/shared_ptr_incomplete.hh",
-    "include/seastar/core/simple-stream.hh",
-    "include/seastar/core/slab.hh",
-    "include/seastar/core/units.hh",
-    "include/seastar/core/vector-data-sink.hh",
-    "include/seastar/core/weak_ptr.hh",
-    "include/seastar/core/when_any.hh",
-    "include/seastar/coroutine/all.hh",
-    "include/seastar/coroutine/maybe_yield.hh",
-    "include/seastar/coroutine/parallel_for_each.hh",
-    "include/seastar/coroutine/switch_to.hh",
-    "include/seastar/net/packet-data-source.hh",
-    "include/seastar/util/closeable.hh",
-    "include/seastar/util/concepts.hh",
-    "include/seastar/util/lazy.hh",
-    "include/seastar/util/source_location-compat.hh",
-]
-
-CORE_SRCS = [
-    "src/core/alien.cc",
-    "src/core/app-template.cc",
-    "src/core/cgroup.hh",
-    "src/core/condition-variable.cc",
-    "src/core/dpdk_rte.cc",
-    "src/core/exception_hacks.cc",
-    "src/core/execution_stage.cc",
-    "src/core/fair_queue.cc",
-    "src/core/file-impl.hh",
-    "src/core/file.cc",
-    "src/core/fsnotify.cc",
-    "src/core/fsqual.cc",
-    "src/core/fstream.cc",
-    "src/core/future-util.cc",
-    "src/core/future.cc",
-    "src/core/io_queue.cc",
-    "src/core/linux-aio.cc",
-    "src/core/memory.cc",
-    "src/core/metrics.cc",
-    "src/core/on_internal_error.cc",
-    "src/core/posix.cc",
-    "src/core/prefault.hh",
-    "src/core/program_options.cc",
-    "src/core/program_options.hh",
-    "src/core/reactor.cc",
-    "src/core/reactor_backend.cc",
-    "src/core/reactor_backend.hh",
-    "src/core/resource.cc",
-    "src/core/scollectd-impl.hh",
-    "src/core/scollectd.cc",
-    "src/core/semaphore.cc",
-    "src/core/sharded.cc",
-    "src/core/signal.cc",
-    "src/core/smp.cc",
-    "src/core/sstring.cc",
-    "src/core/syscall_result.hh",
-    "src/core/syscall_work_queue.hh",
-    "src/core/systemwide_memory_barrier.cc",
-    "src/core/thread.cc",
-    "src/core/thread_pool.cc",
-    "src/core/thread_pool.hh",
-    "src/core/uname.cc",
-    "src/core/vla.hh",
-    "src/net/arp.cc",
-    "src/net/config.cc",
-    "src/net/dhcp.cc",
-    "src/net/dns.cc",
-    "src/net/dpdk.cc",
-    "src/net/ethernet.cc",
-    "src/net/inet_address.cc",
-    "src/net/ip.cc",
-    "src/net/ip_checksum.cc",
-    "src/net/native-stack-impl.hh",
-    "src/net/native-stack.cc",
-    "src/net/net.cc",
-    "src/net/packet.cc",
-    "src/net/posix-stack.cc",
-    "src/net/proxy.cc",
-    "src/net/socket_address.cc",
-    "src/net/stack.cc",
-    "src/net/tcp.cc",
-    "src/net/tls.cc",
-    "src/net/udp.cc",
-    "src/net/unix_address.cc",
-    "src/net/virtio.cc",
-    "src/util/alloc_failure_injector.cc",
-    "src/util/backtrace.cc",
-    "src/util/conversions.cc",
-    "src/util/exceptions.cc",
-    "src/util/file.cc",
-    "src/util/log.cc",
-    "src/util/process.cc",
-    "src/util/program-options.cc",
-    "src/util/read_first_line.cc",
-    "src/util/short_streams.cc",
-    "src/util/tmp_file.cc",
-]
-
-RPC_HEADERS = [
-    "include/seastar/rpc/lz4_compressor.hh",
-    "include/seastar/rpc/lz4_fragmented_compressor.hh",
-    "include/seastar/rpc/multi_algo_compressor_factory.hh",
-    "include/seastar/rpc/rpc.hh",
-    "include/seastar/rpc/rpc_impl.hh",
-    "include/seastar/rpc/rpc_types.hh",
-]
-
-RPC_SRCS = [
-    "src/rpc/lz4_compressor.cc",
-    "src/rpc/lz4_fragmented_compressor.cc",
-    "src/rpc/rpc.cc",
-]
-
-JSON_HEADERS = [
-    "include/seastar/json/json_elements.hh",
-    "include/seastar/json/formatter.hh",
-]
-
-JSON_SRCS = [
-    "src/json/json_elements.cc",
-    "src/json/formatter.cc",
-]
-
-HTTP_HEADERS = [
-    "include/seastar/http/api_docs.hh",
-    "include/seastar/http/client.hh",
-    "include/seastar/http/common.hh",
-    "include/seastar/http/connection_factory.hh",
-    "include/seastar/http/exception.hh",
-    "include/seastar/http/file_handler.hh",
-    "include/seastar/http/function_handlers.hh",
-    "include/seastar/http/handlers.hh",
-    "include/seastar/http/httpd.hh",
-    "include/seastar/http/internal/content_source.hh",
-    "include/seastar/http/json_path.hh",
-    "include/seastar/http/matcher.hh",
-    "include/seastar/http/matchrules.hh",
-    "include/seastar/http/mime_types.hh",
-    "include/seastar/http/reply.hh",
-    "include/seastar/http/request.hh",
-    "include/seastar/http/routes.hh",
-    "include/seastar/http/short_streams.hh",
-    "include/seastar/http/transformers.hh",
-    "include/seastar/http/url.hh",
-    # Generated headers
+PUBLIC_HEADERS = glob(
+    ["include/seastar/**/*.hh"],
+    exclude = [
+        "include/seastar/testing/*.hh",
+    ],
+) + [
     "include/seastar/http/chunk_parsers.hh",
     "include/seastar/http/request_parser.hh",
     "include/seastar/http/response_parser.hh",
 ]
 
-HTTP_SRCS = [
-    "src/http/api_docs.cc",
-    "src/http/client.cc",
-    "src/http/common.cc",
-    "src/http/file_handler.cc",
-    "src/http/httpd.cc",
-    "src/http/json_path.cc",
-    "src/http/matcher.cc",
-    "src/http/mime_types.cc",
-    "src/http/reply.cc",
-    "src/http/request.cc",
-    "src/http/routes.cc",
-    "src/http/transformers.cc",
-    "src/http/url.cc",
-]
+cc_library(
+    name = "headers",
+    hdrs = PUBLIC_HEADERS,
+    strip_include_prefix = "include",
+    visibility = ["//visibility:public"],
+)
 
-METRICS_HEADERS = [
-    "include/seastar/core/prometheus.hh",
-]
-
-METRICS_SRCS = [
-    "src/core/prometheus.cc",
-]
+INTERNAL_HEADERS = glob(["src/**/*.hh"])
 
 seastar_cc_library(
-    name = "headers",
-    hdrs = CORE_HEADERS,
+    name = "seastar_internal_headers",
+    hdrs = INTERNAL_HEADERS,
+    includes = ["src"],
+    strip_include_prefix = "src",
+    visibility = ["//:__pkg__"],
 )
 
 seastar_cc_library(
-    name = "core",
-    srcs = CORE_SRCS,
+    name = "seastar",
+    srcs = MODULE_SRCS,
+    copts = [
+        "-Wno-error",
+        "-Wno-include-angled-in-module-purview",
+    ],
+    features = select({
+        ":use_cpp_modules": ["cpp_modules"],
+        "//conditions:default": [],
+    }),
     linkopts = [
         "-ldl",
         "-lrt",
     ],
+    # module_interfaces = select({
+    #     ":use_cpp_modules": ["src/seastar.cc"],
+    #     "//conditions:default": [],
+    # }),
+    visibility = ["//visibility:public"],
     deps = [
         ":headers",
+        ":metrics2_cc_proto",
+        ":seastar_internal_headers",
         "@boost//:asio",
         "@boost//:endian",
         "@boost//:intrusive",
@@ -534,8 +220,10 @@ seastar_cc_library(
         "@boost//:program_options",
         "@boost//:thread",
         "@cares_cares//:cares",
-        "@fmtlib",
+        "@fmt",
         "@gnutls",
+        "@lz4",
+        "@protobuf",
         "@sctp",
         "@seastar_bazel//third_party/valgrind",
         "@xfs",
@@ -556,62 +244,6 @@ seastar_cc_library(
         ":use_numa": ["@seastar_bazel//third_party/numactl:numa"],
         "//conditions:default": [],
     }),
-)
-
-seastar_cc_library(
-    name = "metrics",
-    srcs = METRICS_SRCS,
-    hdrs = METRICS_HEADERS,
-    deps = [
-        ":http",
-        ":metrics2_cc_proto",
-        "@com_google_protobuf//:protobuf",
-    ],
-)
-
-seastar_cc_library(
-    name = "json",
-    srcs = JSON_SRCS,
-    hdrs = JSON_HEADERS,
-    deps = [
-        ":core",
-        "@boost//:container",
-    ],
-)
-
-seastar_cc_library(
-    name = "http",
-    srcs = HTTP_SRCS,
-    hdrs = HTTP_HEADERS,
-    deps = [
-        ":core",
-        ":json",
-        "@boost//:algorithm",
-        "@boost//:move",
-    ],
-)
-
-seastar_cc_library(
-    name = "rpc",
-    srcs = RPC_SRCS,
-    hdrs = RPC_HEADERS,
-    deps = [
-        ":core",
-        "@lz4",
-    ],
-)
-
-seastar_cc_library(
-    name = "websocket",
-    srcs = [
-        "src/websocket/server.cc",
-    ],
-    hdrs = [
-        "include/seastar/websocket/server.hh",
-    ],
-    deps = [
-        ":http",
-    ],
 )
 
 seastar_cc_library(
@@ -639,7 +271,7 @@ seastar_cc_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        ":core",
+        ":seastar",
         "@boost//:test.so",
     ],
 )
@@ -649,18 +281,6 @@ seastar_cc_library(
     srcs = ["@seastar_bazel//third_party:seastar_test_main.cc"],
     deps = [":testing"],
     alwayslink = 1,
-)
-
-seastar_cc_library(
-    name = "seastar",
-    deps = [
-        ":core",
-        ":http",
-        ":json",
-        ":metrics",
-        ":rpc",
-        ":websocket",
-    ],
 )
 
 genrule(
@@ -701,7 +321,7 @@ cc_binary(
     srcs = ["apps/io_tester/io_tester.cc"],
     copts = COPTS,
     deps = [
-        ":core",
+        ":seastar",
         "@boost//:accumulators",
     ],
 )
@@ -710,14 +330,14 @@ cc_binary(
     name = "ioinfo",
     srcs = ["apps/io_tester/ioinfo.cc"],
     copts = COPTS,
-    deps = [":core"],
+    deps = [":seastar"],
 )
 
 cc_binary(
     name = "iotune",
     srcs = ["apps/iotune/iotune.cc"],
     copts = COPTS,
-    deps = [":core"],
+    deps = [":seastar"],
 )
 
 cc_binary(
@@ -725,7 +345,7 @@ cc_binary(
     srcs = ["apps/rpc_tester/rpc_tester.cc"],
     copts = COPTS,
     deps = [
-        ":rpc",
+        ":seastar",
         "@boost//:accumulators",
     ],
 )
@@ -734,13 +354,16 @@ cc_binary(
     name = "seawreck",
     srcs = ["apps/seawreck/seawreck.cc"],
     copts = COPTS,
-    deps = [":http"],
+    deps = [":seastar"],
 )
 
 [
     cc_binary(
         name = file_name.replace("demos/", "").replace(".cc", ""),
-        srcs = [file_name] + glob(["demos/*.hh"]),
+        srcs = [file_name] + glob([
+            "demos/*.hh",
+            "apps/lib/*.hh",
+        ]),
         copts = COPTS,
         includes = ["demos"],
         deps = [":seastar"],
@@ -760,6 +383,7 @@ cc_binary(
             "tests/unit/cert.cfg.in",
             "tests/unit/tls-ca-bundle.pem",
         ] if "tls" in file_name else [],
+        defines = ["SEASTAR_TESTING_WITH_NETWORKING"],
         deps = [":seastar"],
     )
     for file_name in glob(

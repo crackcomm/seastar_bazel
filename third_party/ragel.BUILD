@@ -3,13 +3,6 @@ licenses(["notice"])  # MIT
 exports_files(["COPYING"])
 
 cc_library(
-    name = "config_h",
-    hdrs = glob(["stub-config/*.h"]),
-    includes = ["stub-config"],
-    visibility = ["//bin:__pkg__"],
-)
-
-cc_library(
     name = "ragel_aapl",
     hdrs = glob(["aapl/*.h"]),
     strip_include_prefix = "aapl",
@@ -57,7 +50,6 @@ cc_library(
     includes = ["src"],
     visibility = ["//bin:__pkg__"],
     deps = [
-        ":config_h",
         ":ragel_aapl",
         "@colm//:runtime",
     ],

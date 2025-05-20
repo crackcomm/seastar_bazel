@@ -1,4 +1,4 @@
-common --noenable_bzlmod
+#common --noenable_bzlmod
 
 # Enforce stricter environment rules, which eliminates some non-hermetic
 # behavior and therefore improves both the remote cache hit rate and the
@@ -12,6 +12,7 @@ build --action_env=CC=clang
 build --action_env=CXX=clang++
 build --host_action_env=CC=clang
 build --host_action_env=CXX=clang++
+build --linkopt="-fuse-ld=lld"
 
 # Release flags
 build:release --copt -O2

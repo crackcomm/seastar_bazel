@@ -54,6 +54,9 @@ CORE_LOCAL_DEFINES = [
 }) + select({
     "@seastar//:use_systemtap": ["SEASTAR_HAVE_SYSTEMTAP_SDT"],
     "//conditions:default": [],
+}) + select({
+    "@seastar//:use_cpp_modules": ["SEASTAR_MODULE"],
+    "//conditions:default": [],
 })
 
 DEBUG_DEFINES = [
@@ -88,7 +91,7 @@ def _extra_kwargs(kwargs):
     return {
         k: v
         for k, v in kwargs.items()
-        if k not in ["defines", "local_defines", "includes", "copts", "deps"]
+        if k not in ["defines", "local_defines", "includes", "copts", "deps", "strip_include_prefix"]
     }
 
 def seastar_cc_library(**kwargs):
@@ -100,7 +103,7 @@ def seastar_cc_library(**kwargs):
         local_defines = DEFAULT_LOCAL_DEFINES + kwargs.get("local_defines", []),
         toolchains = TOOLCHAINS,
         includes = ["include", "src"] + kwargs.get("includes", []),
-        strip_include_prefix = "include",
+        strip_include_prefix = kwargs.get("strip_include_prefix", "include"),
         **_extra_kwargs(kwargs)
     )
 

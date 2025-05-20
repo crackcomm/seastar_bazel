@@ -32,8 +32,8 @@ configure_make(
     out_static_libs = ["libgnutls.a"],
     visibility = ["//visibility:public"],
     deps = [
-        "@com_github_facebook_zstd//:zstd",
-        "@net_zlib_zlib//:zlib",
         "@nettle",
+        "@zlib",
+        "@zstd",
     ],
 )

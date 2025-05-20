@@ -22,6 +22,7 @@ cmake(
     },
     generate_args = ["-GNinja"],
     lib_source = ":all_srcs",
+    out_lib_dir = "lib64",
     out_static_libs = select({
         "@platforms//os:windows": ["cares.lib"],
         "//conditions:default": ["libcares.a"],

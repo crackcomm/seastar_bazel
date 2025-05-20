@@ -1,5 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
-
 licenses(["notice"])  # BSD/MIT-like license (for zlib)
 
 exports_files(["zlib.BUILD"])

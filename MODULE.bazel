@@ -1,0 +1,58 @@
+module(
+    name = "seastar_bazel",
+    version = "0.1.0",
+)
+
+bazel_dep(name = "abseil-cpp", version = "20250127.1")
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "fmt", version = "9.1.0")
+bazel_dep(name = "platforms", version = "0.0.11")
+bazel_dep(name = "protobuf", version = "30.2")
+bazel_dep(name = "rules_boost", repo_name = "com_github_nelhage_rules_boost")
+bazel_dep(name = "rules_cc", version = "0.1.1")
+bazel_dep(name = "rules_foreign_cc", version = "0.14.0")
+bazel_dep(name = "toolchains_protoc", version = "0.4.1")
+bazel_dep(name = "yaml-cpp", version = "0.8.0")
+bazel_dep(name = "zlib", version = "1.3.1.bcr.5")
+bazel_dep(name = "zstd", version = "1.5.7")
+
+archive_override(
+    module_name = "rules_boost",
+    integrity = "sha256-ICuTlyfxD3u1tr12YyeT5qPcA/ZkEUvtMDA2ZRzz1zc=",
+    strip_prefix = "rules_boost-e23cc59f87d5049618472d6ce0ca0ed5ef0c23dc",
+    urls = ["https://github.com/nelhage/rules_boost/archive/e23cc59f87d5049618472d6ce0ca0ed5ef0c23dc.tar.gz"],
+)
+
+single_version_override(
+    module_name = "protobuf",
+    version = "30.2",
+)
+
+protoc = use_extension("@toolchains_protoc//protoc:extensions.bzl", "protoc")
+protoc.toolchain(
+    google_protobuf = "com_google_protobuf",
+    version = "v30.2",
+)
+use_repo(protoc, "com_google_protobuf", "toolchains_protoc_hub")
+
+register_toolchains("@toolchains_protoc_hub//:all")
+
+non_module_boost_repositories = use_extension("@com_github_nelhage_rules_boost//:boost/repositories.bzl", "non_module_dependencies")
+use_repo(
+    non_module_boost_repositories,
+    "boost",
+)
+
+non_module_dependencies = use_extension("//:seastar_deps_bzlmod.bzl", "non_module_dependencies")
+use_repo(non_module_dependencies, "cares_cares")
+use_repo(non_module_dependencies, "colm")
+use_repo(non_module_dependencies, "gmp")
+use_repo(non_module_dependencies, "gnutls")
+use_repo(non_module_dependencies, "ragel")
+use_repo(non_module_dependencies, "sctp")
+use_repo(non_module_dependencies, "systemtap-sdt")
+use_repo(non_module_dependencies, "uring")
+use_repo(non_module_dependencies, "uuid")
+use_repo(non_module_dependencies, "xfs")
+use_repo(non_module_dependencies, "lz4")
+use_repo(non_module_dependencies, "seastar")
