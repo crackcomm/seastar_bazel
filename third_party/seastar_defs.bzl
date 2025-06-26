@@ -23,6 +23,7 @@ CORE_DEFINES = [
     "SEASTAR_SCHEDULING_GROUPS_COUNT=$(SCHEDULING_GROUPS)",
     "SEASTAR_API_LEVEL=$(API_LEVEL)",
     "SEASTAR_STRERROR_R_CHAR_P",
+    "SEASTAR_DEFERRED_ACTION_REQUIRE_NOEXCEPT",
 ] + select({
     "@seastar//:use_sstring": ["SEASTAR_SSTRING"],
     "//conditions:default": [],
@@ -32,15 +33,11 @@ CORE_DEFINES = [
 }) + select({
     "@seastar//:use_stack_guards": ["SEASTAR_THREAD_STACK_GUARDS"],
     "//conditions:default": [],
-})
-
-CORE_LOCAL_DEFINES = [
-    "SEASTAR_DEFERRED_ACTION_REQUIRE_NOEXCEPT",
-] + select({
-    "@seastar//:use_uring": ["SEASTAR_HAVE_URING"],
-    "//conditions:default": [],
 }) + select({
     "@seastar//:use_dpdk": ["SEASTAR_HAVE_DPDK"],
+    "//conditions:default": [],
+}) + select({
+    "@seastar//:use_uring": ["SEASTAR_HAVE_URING"],
     "//conditions:default": [],
 }) + select({
     "@seastar//:use_default_allocator": ["SEASTAR_DEFAULT_ALLOCATOR"],
@@ -48,7 +45,9 @@ CORE_LOCAL_DEFINES = [
 }) + select({
     "@seastar//:use_hwloc": ["SEASTAR_HAVE_HWLOC"],
     "//conditions:default": [],
-}) + select({
+})
+
+CORE_LOCAL_DEFINES = select({
     "@seastar//:use_systemtap": ["SEASTAR_HAVE_SYSTEMTAP_SDT"],
     "//conditions:default": [],
 }) + select({
