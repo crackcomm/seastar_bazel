@@ -37,9 +37,6 @@ CORE_DEFINES = [
 CORE_LOCAL_DEFINES = [
     "SEASTAR_DEFERRED_ACTION_REQUIRE_NOEXCEPT",
 ] + select({
-    "@seastar//:use_numa": ["SEASTAR_HAVE_NUMA"],
-    "//conditions:default": [],
-}) + select({
     "@seastar//:use_uring": ["SEASTAR_HAVE_URING"],
     "//conditions:default": [],
 }) + select({

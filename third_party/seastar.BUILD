@@ -30,11 +30,6 @@ bool_flag(
 )
 
 bool_flag(
-    name = "numa",
-    build_setting_default = True,
-)
-
-bool_flag(
     name = "uring",
     build_setting_default = False,
 )
@@ -99,11 +94,6 @@ config_setting(
 config_setting(
     name = "use_dpdk",
     flag_values = {":dpdk": "true"},
-)
-
-config_setting(
-    name = "use_numa",
-    flag_values = {":numa": "true"},
 )
 
 config_setting(
@@ -245,13 +235,13 @@ seastar_cc_library(
         ":use_uring": ["@uring"],
         "//conditions:default": [],
     }) + select({
-        ":use_dpdk": ["@dpdk"],
+        ":use_dpdk": [
+            "@dpdk",
+            "@seastar_bazel//third_party/numactl:numa",
+        ],
         "//conditions:default": [],
     }) + select({
         ":use_systemtap": ["@systemtap-sdt"],
-        "//conditions:default": [],
-    }) + select({
-        ":use_numa": ["@seastar_bazel//third_party/numactl:numa"],
         "//conditions:default": [],
     }),
 )
