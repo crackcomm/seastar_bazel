@@ -57,6 +57,9 @@ CORE_LOCAL_DEFINES = [
 }) + select({
     "@seastar//:use_cpp_modules": ["SEASTAR_MODULE"],
     "//conditions:default": [],
+}) + select({
+    "@seastar//:have_asan_fiber_support": ["SEASTAR_HAVE_ASAN_FIBER_SUPPORT"],
+    "//conditions:default": [],
 })
 
 DEBUG_DEFINES = [
