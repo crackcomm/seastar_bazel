@@ -120,3 +120,51 @@ def seastar_cc_test(**kwargs):
         ] + kwargs.get("deps", []),
         **_extra_kwargs(kwargs)
     )
+
+def seastar_generate_swagger(name, in_file, deps = [], **kwargs):
+    """Generates a cc_library from a Seastar JSON file.
+
+    This macro mimics the seastar_generate_swagger CMake function. It runs the
+    seastar-json2code.py script to generate a .hh and .cc file, and then
+    wraps them in a cc_library target.
+
+    Args:
+      name: The base name for the generated files and the final cc_library target.
+      in_file: A label pointing to the input JSON file.
+      deps: A list of other cc_library targets this library depends on.
+      **kwargs: Additional arguments (like visibility, copts, etc.) to be
+        passed to the underlying cc_library rule.
+    """
+
+    header_out = in_file + ".hh"
+    source_out = in_file + ".cc"
+    gen_target_name = "_" + name + "_gen"
+
+    native.genrule(
+        name = gen_target_name,
+        srcs = [in_file],
+        outs = [
+            header_out,
+            source_out,
+        ],
+        tools = ["@seastar//:seastar_json2code"],
+        cmd = """
+            set -e
+            TOOL_PATH="$$(pwd)/$(execpath @seastar//:seastar_json2code)"
+            INPUT_PATH="$$(pwd)/$(execpath %s)"
+
+            cd "$(RULEDIR)"
+
+            "$${TOOL_PATH}" --create-cc -f "$${INPUT_PATH}" -o %s
+        """ % (in_file, header_out),
+        visibility = ["//visibility:private"],
+    )
+
+    native.cc_library(
+        name = name,
+        srcs = [source_out],
+        hdrs = [header_out],
+        deps = deps + ["@seastar//:seastar"],
+        includes = ["."],
+        **kwargs,
+    )

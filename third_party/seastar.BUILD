@@ -4,6 +4,7 @@ load(
     "COPTS",
     "seastar_cc_library",
     "seastar_cc_test",
+    "seastar_generate_swagger",
 )
 
 licenses(["notice"])  # Apache 2.0
@@ -314,6 +315,28 @@ genrule(
         "sed -i -e '1h;2,$$H;$$!d;g' -re 's/static const char _nfa[^;]*;//g' $@",
     ]),
     tools = ["@ragel//:ragelc"],
+)
+
+py_binary(
+    name = "seastar_json2code",
+    srcs = ["scripts/seastar-json2code.py"],
+    main = "scripts/seastar-json2code.py",
+)
+
+seastar_generate_swagger(
+    name = "demo_api",
+    in_file = "apps/httpd/demo.json",
+    visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "httpd",
+    srcs = ["apps/httpd/main.cc"],
+    copts = COPTS,
+    deps = [
+        ":demo_api",
+        ":seastar",
+    ],
 )
 
 cc_binary(
