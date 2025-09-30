@@ -255,18 +255,9 @@ seastar_cc_library(
         "src/testing/seastar_test.cc",
         "src/testing/test_runner.cc",
     ],
-    hdrs = [
-        "include/seastar/testing/entry_point.hh",
-        "include/seastar/testing/exchanger.hh",
-        "include/seastar/testing/linux_perf_event.hh",
-        "include/seastar/testing/on_internal_error.hh",
-        "include/seastar/testing/perf_tests.hh",
-        "include/seastar/testing/random.hh",
-        "include/seastar/testing/seastar_test.hh",
-        "include/seastar/testing/test_case.hh",
-        "include/seastar/testing/test_runner.hh",
-        "include/seastar/testing/thread_test_case.hh",
-    ],
+    hdrs = glob([
+        "include/seastar/testing/*.hh",
+    ]),
     defines = [
         "BOOST_TEST_ALTERNATIVE_INIT_API",
     ],
