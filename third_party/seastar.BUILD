@@ -230,14 +230,14 @@ seastar_cc_library(
         "@xfs",
         "@yaml-cpp",
     ] + select({
-        ":use_hwloc": ["@hwloc"],
+        # ":use_hwloc": ["@hwloc"],
         "//conditions:default": [],
     }) + select({
         ":use_uring": ["@uring"],
         "//conditions:default": [],
     }) + select({
         ":use_dpdk": [
-            "@dpdk",
+            # "@dpdk",
             "@seastar_bazel//third_party/numactl:numa",
         ],
         "//conditions:default": [],
