@@ -55,10 +55,6 @@ cc_library(
     # cflags aligned with upstream:
     # https://github.com/axboe/liburing/blob/master/src/Makefile#L13
     copts = [
-        "-D_GNU_SOURCE",
-        "-D_LARGEFILE_SOURCE",
-        "-D_FILE_OFFSET_BITS=64",
-        "-DLIBURING_INTERNAL",
         "-O3",
         "-Wall",
         "-Wextra",
@@ -66,6 +62,12 @@ cc_library(
         "-include config-host.h",
     ],
     includes = ["src/include"],
+    local_defines = [
+        "_GNU_SOURCE",
+        "_LARGEFILE_SOURCE",
+        "_FILE_OFFSET_BITS=64",
+        "LIBURING_INTERNAL",
+    ],
     visibility = ["//visibility:public"],
 )
 

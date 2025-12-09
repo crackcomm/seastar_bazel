@@ -266,12 +266,12 @@ cc_binary(
         "src/loadcolm.h",
         "src/main.cc",
     ],
-    copts = [
-        "-w",
-        '-DPREFIX=""',
-        "-DLOAD_COLM",
-    ],
+    copts = ["-w"],
     features = ["no_copts_tokenization"],
+    local_defines = [
+        'PREFIX=""',
+        "LOAD_COLM",
+    ],
     visibility = ["//visibility:public"],
     deps = [
         ":gen_if2",

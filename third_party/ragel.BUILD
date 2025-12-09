@@ -42,12 +42,12 @@ cc_library(
         "src/parse.c",
         "src/rlreduce.cc",
     ],
-    copts = [
-        "-w",
-        '-DBINDIR=""',
-    ],
+    copts = ["-w"],
     features = ["no_copts_tokenization"],
     includes = ["src"],
+    local_defines = [
+        'BINDIR=\\"\\"',
+    ],
     visibility = ["//bin:__pkg__"],
     deps = [
         ":ragel_aapl",
