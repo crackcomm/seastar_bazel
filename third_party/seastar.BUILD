@@ -1,4 +1,5 @@
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "int_flag")
+load("@rules_python//python:defs.bzl", "py_binary")
 load(
     "@seastar_bazel//third_party:seastar_defs.bzl",
     "COPTS",
@@ -280,6 +281,15 @@ seastar_cc_library(
         ":seastar",
         "@boost//:test.so",
     ],
+)
+
+seastar_cc_library(
+    name = "benchmark",
+    srcs = [
+        "tests/perf/linux_perf_event.cc",
+        "tests/perf/perf_tests.cc",
+    ],
+    deps = [":testing"],
 )
 
 seastar_cc_library(
