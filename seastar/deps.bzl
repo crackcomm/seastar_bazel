@@ -1,6 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
-load("//:seastar_archive.bzl", "seastar_archive")
+load("@seastar_bazel//seastar:repo.bzl", "seastar_archive")
 
 def seastar_deps():
     # keep-sorted start block=yes newline_separated=yes

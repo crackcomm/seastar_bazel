@@ -12,6 +12,7 @@ bazel_dep(name = "protobuf", version = "30.2")
 bazel_dep(name = "rules_boost", repo_name = "com_github_nelhage_rules_boost")
 bazel_dep(name = "rules_cc", version = "0.1.1")
 bazel_dep(name = "rules_foreign_cc", version = "0.15.1")
+bazel_dep(name = "rules_python", version = "1.6.3")
 bazel_dep(name = "toolchains_protoc", version = "0.4.1")
 bazel_dep(name = "yaml-cpp", version = "0.8.0")
 bazel_dep(name = "zlib", version = "1.3.1.bcr.5")
@@ -44,7 +45,7 @@ use_repo(
     "boost",
 )
 
-non_module_dependencies = use_extension("//:seastar_deps.bzl", "non_module_dependencies")
+non_module_dependencies = use_extension("//seastar:deps.bzl", "non_module_dependencies")
 use_repo(non_module_dependencies, "cares_cares")
 use_repo(non_module_dependencies, "colm")
 use_repo(non_module_dependencies, "gmp")

@@ -1,7 +1,7 @@
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag", "int_flag")
 load("@rules_python//python:defs.bzl", "py_binary")
 load(
-    "@seastar_bazel//third_party:seastar_defs.bzl",
+    "@seastar_bazel//seastar:defs.bzl",
     "COPTS",
     "seastar_cc_library",
     "seastar_cc_test",
@@ -294,7 +294,7 @@ seastar_cc_library(
 
 seastar_cc_library(
     name = "testing_main",
-    srcs = ["@seastar_bazel//third_party:seastar_test_main.cc"],
+    srcs = ["@seastar_bazel//seastar:seastar_test_main.cc"],
     deps = [":testing"],
     alwayslink = 1,
 )
