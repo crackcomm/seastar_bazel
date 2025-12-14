@@ -79,6 +79,11 @@ bool_flag(
 )
 
 bool_flag(
+    name = "asan",
+    build_setting_default = False,
+)
+
+bool_flag(
     name = "asan_fiber_support",
     build_setting_default = True,
 )
@@ -136,6 +141,11 @@ config_setting(
 config_setting(
     name = "use_logger_compile_time_fmt",
     flag_values = {":logger_compile_time_fmt": "true"},
+)
+
+config_setting(
+    name = "asan_enabled",
+    flag_values = {":asan": "true"},
 )
 
 config_setting(

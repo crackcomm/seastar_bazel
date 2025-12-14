@@ -45,6 +45,9 @@ CORE_DEFINES = [
 }) + select({
     "@seastar//:use_hwloc": ["SEASTAR_HAVE_HWLOC"],
     "//conditions:default": [],
+}) + select({
+    "@seastar//:asan_enabled": ["SEASTAR_ASAN_ENABLED"],
+    "//conditions:default": [],
 })
 
 CORE_LOCAL_DEFINES = select({
@@ -166,5 +169,5 @@ def seastar_generate_swagger(name, in_file, deps = [], **kwargs):
         hdrs = [header_out],
         deps = deps + ["@seastar//:seastar"],
         includes = ["."],
-        **kwargs,
+        **kwargs
     )
