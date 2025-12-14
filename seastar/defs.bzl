@@ -2,7 +2,6 @@
 
 COPTS = [
     "-std=c++23",
-    "-fno-semantic-interposition",
     "-Wimplicit-fallthrough",
     "-Wno-error=deprecated",
     "-Wno-unused-variable",
