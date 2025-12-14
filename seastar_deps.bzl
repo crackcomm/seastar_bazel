@@ -205,17 +205,6 @@ def seastar_deps():
 
     maybe(
         http_archive,
-        name = "uring",
-        build_file = "@seastar_bazel//third_party:uring.BUILD",
-        sha256 = "456f5f882165630f0dc7b75e8fd53bd01a955d5d4720729b4323097e6e9f2a98",
-        strip_prefix = "liburing-liburing-2.5",
-        urls = [
-            "https://github.com/axboe/liburing/archive/refs/tags/liburing-2.5.tar.gz",
-        ],
-    )
-
-    maybe(
-        http_archive,
         name = "bazel_clang_tidy",
         integrity = "sha256-bVCXKTSdmB2f9EKUizJIm8mwRnAmbuFNXRgKtNkjgxM=",
         strip_prefix = "bazel_clang_tidy-0baa068ae3cdb5cc450e61afb4f9f43a2b329716",

@@ -233,7 +233,7 @@ seastar_cc_library(
         # ":use_hwloc": ["@hwloc"],
         "//conditions:default": [],
     }) + select({
-        ":use_uring": ["@uring"],
+        ":use_uring": ["@liburing"],
         "//conditions:default": [],
     }) + select({
         ":use_dpdk": [
