@@ -87,6 +87,11 @@ bool_flag(
     build_setting_default = False,
 )
 
+bool_flag(
+    name = "exception_intercept",
+    build_setting_default = True,
+)
+
 config_setting(
     name = "use_sstring",
     flag_values = {":sstring": "true"},
@@ -140,6 +145,11 @@ config_setting(
 config_setting(
     name = "use_cpp_modules",
     flag_values = {":cpp_modules": "true"},
+)
+
+config_setting(
+    name = "use_exception_intercept",
+    flag_values = {":exception_intercept": "true"},
 )
 
 proto_library(
@@ -205,6 +215,10 @@ seastar_cc_library(
         "-ldl",
         "-lrt",
     ],
+    local_defines = select({
+        ":use_exception_intercept": [],
+        "//conditions:default": ["NO_EXCEPTION_INTERCEPT"],
+    }),
     # module_interfaces = select({
     #     ":use_cpp_modules": ["src/seastar.cc"],
     #     "//conditions:default": [],
