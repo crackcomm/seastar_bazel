@@ -1,4 +1,6 @@
-#common --noenable_bzlmod
+common --enable_bzlmod
+
+common --@seastar//:uring=true
 
 # Enforce stricter environment rules, which eliminates some non-hermetic
 # behavior and therefore improves both the remote cache hit rate and the
@@ -13,6 +15,13 @@ build --action_env=CXX=clang++
 build --host_action_env=CC=clang
 build --host_action_env=CXX=clang++
 build --linkopt="-fuse-ld=lld"
+
+common:nix --cxxopt=-xc++ --host_cxxopt=-xc++
+common:nix --sandbox_add_mount_pair=/usr/lib:/usr/lib
+common:nix --sandbox_add_mount_pair=/usr/lib64:/usr/lib64
+common:nix --sandbox_add_mount_pair=/usr/include:/usr/include
+common:nix --repo_env=PATH=/usr/bin:/bin:/run/current-system/sw/bin
+common:nix --action_env=PATH=/usr/bin:/bin:/run/current-system/sw/bin
 
 # Release flags
 build:release --copt -O2

@@ -8,10 +8,7 @@ exports_files(["COPYING.LESSERv3"])
 
 filegroup(
     name = "all",
-    srcs = glob([
-        "*.h",
-        "*.c",
-    ]),
+    srcs = glob(["**"]),
 )
 
 configure_make(
@@ -25,14 +22,27 @@ configure_make(
     build_data = glob(["**/*"]),
     configure_in_place = True,
     configure_options = [
-        "--disable-doc",
+        "--disable-documentation",
+        "--disable-openssl",
         "--disable-shared",
+        "--enable-static",
+        "--enable-public-key",
+        "--prefix=$$INSTALLDIR",
+        "--libdir=$$INSTALLDIR/lib",
+        "--includedir=$$INSTALLDIR/include",
     ],
+    env = {
+        "CPPFLAGS": "-I$$EXT_BUILD_DEPS$$/include",
+        "LDFLAGS": "-L$$EXT_BUILD_DEPS$$/lib",
+    },
     lib_source = ":all",
-    out_lib_dir = "lib64",
+    out_lib_dir = "lib",
     out_static_libs = [
         "libhogweed.a",
         "libnettle.a",
+    ],
+    targets = [
+        "install-headers install-static",
     ],
     visibility = ["//visibility:public"],
     deps = ["@gmp"],

@@ -4,7 +4,6 @@ exports_files([
     "cares.BUILD",
     "colm.BUILD",
     "common.bzl",
-    "fmtlib.BUILD",
     "gmp.BUILD",
     "gnutls.BUILD",
     "lz4.BUILD",
@@ -15,10 +14,6 @@ exports_files([
     "seastar_defs.bzl",
     "seastar_test_main.cc",
     "systemtap-sdt.BUILD",
-    "uring.BUILD",
     "uuid.BUILD",
     "xfs.BUILD",
-    "yaml-cpp.BUILD",
-    "zlib.BUILD",
-    "zstd.BUILD",
 ])
