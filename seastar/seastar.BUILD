@@ -180,6 +180,7 @@ MODULE_SRCS = glob(
     exclude = [
         "src/seastar.cc",
         "src/testing/*.cc",
+        "src/core/prometheus.cc",
     ],
 )
 
@@ -187,6 +188,7 @@ PUBLIC_HEADERS = glob(
     ["include/seastar/**/*.hh"],
     exclude = [
         "include/seastar/testing/*.hh",
+        "include/seastar/core/prometheus.hh",
     ],
 ) + [
     "include/seastar/http/chunk_parsers.hh",
@@ -201,7 +203,12 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
-INTERNAL_HEADERS = glob(["src/**/*.hh"])
+INTERNAL_HEADERS = glob(
+    ["src/**/*.hh"],
+    exclude = [
+        "src/core/prometheus-impl.hh",
+    ],
+)
 
 seastar_cc_library(
     name = "seastar_internal_headers",
@@ -237,7 +244,6 @@ seastar_cc_library(
     visibility = ["//visibility:public"],
     deps = [
         ":headers",
-        ":metrics2_cc_proto",
         ":seastar_internal_headers",
         "@boost//:asio",
         "@boost//:endian",
@@ -249,7 +255,6 @@ seastar_cc_library(
         "@fmt",
         "@gnutls",
         "@lz4",
-        "@protobuf",
         "@sctp",
         "@seastar_bazel//third_party/valgrind",
         "@xfs",
@@ -270,6 +275,23 @@ seastar_cc_library(
         ":use_systemtap": ["@systemtap-sdt"],
         "//conditions:default": [],
     }),
+)
+
+seastar_cc_library(
+    name = "prometheus",
+    srcs = [
+        "src/core/prometheus.cc",
+        "src/core/prometheus-impl.hh",
+    ],
+    hdrs = [
+        "include/seastar/core/prometheus.hh",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":metrics2_cc_proto",
+        ":seastar",
+        "@protobuf",
+    ],
 )
 
 seastar_cc_library(
