@@ -250,7 +250,6 @@ seastar_cc_library(
         "@boost//:intrusive",
         "@boost//:lockfree",
         "@boost//:program_options",
-        "@boost//:thread",
         "@cares_cares//:cares",
         "@fmt",
         "@gnutls",
