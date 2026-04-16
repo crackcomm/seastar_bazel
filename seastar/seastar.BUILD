@@ -195,6 +195,69 @@ cc_proto_library(
     deps = [":metrics2_proto"],
 )
 
+BASE_HEADERS = [
+    "include/seastar/core/abort_on_expiry.hh",
+    "include/seastar/core/abort_source.hh",
+    "include/seastar/core/abortable_fifo.hh",
+    "include/seastar/core/align.hh",
+    "include/seastar/core/circular_buffer_fixed_capacity.hh",
+    "include/seastar/core/bitops.hh",
+    "include/seastar/core/bitset-iter.hh",
+    "include/seastar/core/cacheline.hh",
+    "include/seastar/core/chunked_fifo.hh",
+    "include/seastar/core/circular_buffer.hh",
+    "include/seastar/core/coroutine.hh",
+    "include/seastar/core/deleter.hh",
+    "include/seastar/core/do_with.hh",
+    "include/seastar/core/format.hh",
+    "include/seastar/core/function_traits.hh",
+    "include/seastar/core/future.hh",
+    "include/seastar/core/iostream-impl.hh",
+    "include/seastar/core/iostream.hh",
+    "include/seastar/core/loop.hh",
+    "include/seastar/core/lowres_clock.hh",
+    "include/seastar/core/make_task.hh",
+    "include/seastar/core/preempt.hh",
+    "include/seastar/core/scattered_message.hh",
+    "include/seastar/core/scheduling.hh",
+    "include/seastar/core/enum.hh",
+    "include/seastar/core/semaphore.hh",
+    "include/seastar/core/shard_id.hh",
+    "include/seastar/core/shared_ptr.hh",
+    "include/seastar/core/shared_ptr_debug_helper.hh",
+    "include/seastar/core/sstring.hh",
+    "include/seastar/core/task.hh",
+    "include/seastar/core/temporary_buffer.hh",
+    "include/seastar/core/thread_impl.hh",
+    "include/seastar/core/timed_out_error.hh",
+    "include/seastar/core/timer-set.hh",
+    "include/seastar/core/timer.hh",
+    "include/seastar/core/transfer.hh",
+    "include/seastar/core/file-types.hh",
+    "include/seastar/coroutine/exception.hh",
+    "include/seastar/coroutine/maybe_yield.hh",
+    "include/seastar/net/const.hh",
+    "include/seastar/net/packet.hh",
+    "include/seastar/util/assert.hh",
+    "include/seastar/util/backtrace.hh",
+    "include/seastar/util/bool_class.hh",
+    "include/seastar/util/critical_alloc_section.hh",
+    "include/seastar/util/eclipse.hh",
+    "include/seastar/util/indirect.hh",
+    "include/seastar/util/iostream.hh",
+    "include/seastar/util/is_smart_ptr.hh",
+    "include/seastar/util/noncopyable_function.hh",
+    "include/seastar/util/optimized_optional.hh",
+    "include/seastar/util/sampler.hh",
+    "include/seastar/util/std-compat.hh",
+    "include/seastar/util/used_size.hh",
+    "include/seastar/util/variant_utils.hh",
+]
+
+BASE_SRCS = [
+    "src/core/sstring.cc",
+]
+
 GNUTLS_SRCS = [
     "src/net/tls_gnutls.cc",
     "src/core/crypto_gnutls.cc",
@@ -211,7 +274,7 @@ MODULE_SRCS = glob(
         "src/seastar.cc",
         "src/testing/*.cc",
         "src/core/prometheus.cc",
-    ] + GNUTLS_SRCS + OPENSSL_SRCS,
+    ] + BASE_SRCS + GNUTLS_SRCS + OPENSSL_SRCS,
 )
 
 PUBLIC_HEADERS = glob(
@@ -219,7 +282,7 @@ PUBLIC_HEADERS = glob(
     exclude = [
         "include/seastar/testing/*.hh",
         "include/seastar/core/prometheus.hh",
-    ],
+    ] + BASE_HEADERS,
 ) + [
     "include/seastar/http/chunk_parsers.hh",
     "include/seastar/http/request_parser.hh",
@@ -237,7 +300,7 @@ INTERNAL_HEADERS = glob(
     ["src/**/*.hh"],
     exclude = [
         "src/core/prometheus-impl.hh",
-    ],
+    ] + BASE_HEADERS,
 )
 
 seastar_cc_library(
@@ -246,6 +309,21 @@ seastar_cc_library(
     includes = ["src"],
     strip_include_prefix = "src",
     visibility = ["//:__pkg__"],
+)
+
+seastar_cc_library(
+    name = "base",
+    srcs = BASE_SRCS,
+    hdrs = BASE_HEADERS,
+    local_defines = select({
+        ":use_exception_intercept": [],
+        "//conditions:default": ["NO_EXCEPTION_INTERCEPT"],
+    }),
+    deps = [
+        "@boost//:container",
+        "@boost//:intrusive",
+        "@fmt",
+    ],
 )
 
 seastar_cc_library(
@@ -285,6 +363,7 @@ seastar_cc_library(
     # }),
     visibility = ["//visibility:public"],
     deps = [
+        ":base",
         ":headers",
         ":seastar_internal_headers",
         "@boost//:asio",
