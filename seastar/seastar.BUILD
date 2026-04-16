@@ -47,6 +47,16 @@ bool_flag(
 )
 
 bool_flag(
+    name = "gnutls",
+    build_setting_default = True,
+)
+
+bool_flag(
+    name = "openssl",
+    build_setting_default = False,
+)
+
+bool_flag(
     name = "default_allocator",
     build_setting_default = False,
 )
@@ -124,6 +134,16 @@ config_setting(
 )
 
 config_setting(
+    name = "use_gnutls",
+    flag_values = {":gnutls": "true"},
+)
+
+config_setting(
+    name = "use_openssl",
+    flag_values = {":openssl": "true"},
+)
+
+config_setting(
     name = "use_default_allocator",
     flag_values = {":default_allocator": "true"},
 )
@@ -175,13 +195,23 @@ cc_proto_library(
     deps = [":metrics2_proto"],
 )
 
+GNUTLS_SRCS = [
+    "src/net/tls_gnutls.cc",
+    "src/core/crypto_gnutls.cc",
+]
+
+OPENSSL_SRCS = [
+    "src/net/tls_openssl.cc",
+    "src/core/crypto_openssl.cc",
+]
+
 MODULE_SRCS = glob(
     ["src/**/*.cc"],
     exclude = [
         "src/seastar.cc",
         "src/testing/*.cc",
         "src/core/prometheus.cc",
-    ],
+    ] + GNUTLS_SRCS + OPENSSL_SRCS,
 )
 
 PUBLIC_HEADERS = glob(
@@ -220,7 +250,13 @@ seastar_cc_library(
 
 seastar_cc_library(
     name = "seastar",
-    srcs = MODULE_SRCS,
+    srcs = MODULE_SRCS + select({
+        ":use_gnutls": GNUTLS_SRCS,
+        "//conditions:default": [],
+    }) + select({
+        ":use_openssl": OPENSSL_SRCS,
+        "//conditions:default": [],
+    }),
     copts = [
         "-Wno-error",
         "-Wno-include-angled-in-module-purview",
@@ -236,6 +272,12 @@ seastar_cc_library(
     local_defines = select({
         ":use_exception_intercept": [],
         "//conditions:default": ["NO_EXCEPTION_INTERCEPT"],
+    }) + select({
+        ":use_openssl": ["SEASTAR_HAVE_OPENSSL"],
+        "//conditions:default": [],
+    }) + select({
+        ":use_gnutls": ["SEASTAR_HAVE_GNUTLS"],
+        "//conditions:default": [],
     }),
     # module_interfaces = select({
     #     ":use_cpp_modules": ["src/seastar.cc"],
@@ -252,13 +294,15 @@ seastar_cc_library(
         "@boost//:program_options",
         "@cares_cares//:cares",
         "@fmt",
-        "@gnutls",
         "@lz4",
         "@sctp",
         "@seastar_bazel//third_party/valgrind",
         "@xfs",
         "@yaml-cpp",
     ] + select({
+        ":use_gnutls": ["@gnutls"],
+        "//conditions:default": [],
+    }) + select({
         # ":use_hwloc": ["@hwloc"],
         "//conditions:default": [],
     }) + select({
