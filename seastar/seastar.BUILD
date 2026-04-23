@@ -500,10 +500,15 @@ seastar_generate_swagger(
 
 cc_binary(
     name = "httpd",
-    srcs = ["apps/httpd/main.cc"],
+    srcs = [
+        "apps/httpd/main.cc",
+        "apps/lib/stop_signal.hh",
+    ],
     copts = COPTS,
+    includes = ["."],
     deps = [
         ":demo_api",
+        ":prometheus",
         ":seastar",
     ],
 )
@@ -566,6 +571,16 @@ cc_binary(
     )
 ]
 
+seastar_cc_test(
+    name = "linux_perf_event_test",
+    size = "small",
+    srcs = ["tests/unit/linux_perf_event_test.cc"],
+    deps = [
+        ":benchmark",
+        ":seastar",
+    ],
+)
+
 [
     seastar_cc_test(
         name = file_name.replace("tests/unit/", "").replace(".cc", ""),
@@ -576,7 +591,10 @@ cc_binary(
             "tests/unit/tls-ca-bundle.pem",
         ] if "tls" in file_name else [],
         defines = ["SEASTAR_TESTING_WITH_NETWORKING"],
-        deps = [":seastar"],
+        deps = [
+            ":prometheus",
+            ":seastar",
+        ],
     )
     for file_name in glob(
         ["tests/unit/*_test.cc"],
@@ -587,6 +605,8 @@ cc_binary(
             "tests/unit/distributed_test.cc",
             # https://github.com/scylladb/seastar/issues/520
             "tests/unit/slab_test.cc",
+            # defined above:
+            "tests/unit/linux_perf_event_test.cc",
         ],
     )
 ]
