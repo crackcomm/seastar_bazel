@@ -162,11 +162,14 @@ def seastar_generate_swagger(name, in_file, deps = [], **kwargs):
         visibility = ["//visibility:private"],
     )
 
+    # Remove filename from `in_file` to get the directory for includes.
+    in_file_dir = in_file[:in_file.rfind("/")] if "/" in in_file else ""
+
     native.cc_library(
         name = name,
         srcs = [source_out],
         hdrs = [header_out],
         deps = deps + ["@seastar//:seastar"],
-        includes = ["."],
+        includes = [".", in_file_dir],
         **kwargs
     )
